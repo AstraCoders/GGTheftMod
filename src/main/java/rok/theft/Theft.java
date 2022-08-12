@@ -33,7 +33,7 @@ public class Theft {
 	//private static final Logger LOGGER = LogManager.getLogger();
 
 	private static final DeferredRegister<ContainerType<?>> CONTAINER_REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
-	public static RegistryObject<ContainerType<Container>> CUSTOM_CHEST = CONTAINER_REGISTRY.register("theft_container", () -> new ContainerType<>(CustomChestContainer::new));
+	public static RegistryObject<ContainerType<CustomChestContainer>> CUSTOM_CHEST = CONTAINER_REGISTRY.register("theft_container", () -> new ContainerType<>(CustomChestContainer::new));
 
 	public Theft() {
 		MinecraftForge.EVENT_BUS.register(new Events());
