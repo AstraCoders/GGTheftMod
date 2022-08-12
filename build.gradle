@@ -62,14 +62,16 @@ minecraft {
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
 
-
             mods {
                 gear {
                     source sourceSets.main
                 }
             }
         }
-
+        clientalt {
+            parent runs.client
+            args '--username', 'Dev####' //#s get replaced with random numbers when starting
+        }
         server {
             workingDirectory project.file('run')
 

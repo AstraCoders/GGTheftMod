@@ -3,16 +3,12 @@ package rok.theft.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.screen.inventory.ChestScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ChestContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import rok.theft.Theft;
 import rok.theft.container.CustomChestContainer;
-import rok.theft.mixins.AccessorChestScreen;
-import rok.theft.mixins.hacks.IStatus;
 
 /*
  * @author Rok, Pedro Lucas N M Machado created on 12/08/2022
@@ -29,9 +25,6 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 		this.containerRows = pChestMenu.getRowCount();
 		this.imageHeight = 114 + this.containerRows * 18;
 		this.inventoryLabelY = this.imageHeight - 94;
-//		for (int x = 4; x < 8; x++) {
-//			((IStatus) pChestMenu.getSlot(x)).setStatus(false);
-//		}
 	}
 
 	/**

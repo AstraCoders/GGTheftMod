@@ -5,11 +5,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "theft.refmap.json",
   "mixins": [
-    "MixinSlot"
   ],
   "client": [
-    "AccessorChestScreen",
-    "MixinTheftChestScreen"
   ],
   "injectors": {
     "defaultRequire": 1
