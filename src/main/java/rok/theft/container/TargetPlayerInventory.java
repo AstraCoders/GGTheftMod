@@ -1,13 +1,14 @@
-package rok.theft;
+package rok.theft.container;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-public class PlayerInvChest implements IInventory {
+
+public class TargetPlayerInventory implements IInventory {
 	public final ServerPlayerEntity player;
 
-	public PlayerInvChest(ServerPlayerEntity p) {
+	public TargetPlayerInventory(ServerPlayerEntity p) {
 		player = p;
 	}
 

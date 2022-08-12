@@ -7,6 +7,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -20,13 +21,10 @@ import org.apache.logging.log4j.Logger;
 import java.beans.EventHandler;
 import java.util.stream.Collectors;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(Theft.MOD_ID)
 public class Theft {
-
-	// Directly reference a log4j logger.
 	public static final String MOD_ID = "theft";
-	private static final Logger LOGGER = LogManager.getLogger();
+	//private static final Logger LOGGER = LogManager.getLogger();
 
 	public Theft() {
 		// Register the setup method for modloading
