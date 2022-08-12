@@ -8,6 +8,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.RegistryObject;
@@ -22,6 +23,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import rok.theft.client.ClientStuff;
 import rok.theft.container.CustomChestContainer;
 
 import java.beans.EventHandler;
@@ -36,6 +38,13 @@ public class Theft {
 	public static RegistryObject<ContainerType<CustomChestContainer>> CUSTOM_CHEST = CONTAINER_REGISTRY.register("theft_container", () -> new ContainerType<>(CustomChestContainer::new));
 
 	public Theft() {
+		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		CONTAINER_REGISTRY.register(bus);
 		MinecraftForge.EVENT_BUS.register(new Events());
+		bus.addListener(this::onClientRegister);
 	}
+	public void onClientRegister(FMLClientSetupEvent e) {
+		ClientStuff.init(e);
+	}
+
 }

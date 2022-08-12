@@ -10,11 +10,12 @@ import rok.theft.Theft;
 /*
  * @author Rok, Pedro Lucas N M Machado created on 12/08/2022
  */
-@Mod.EventBusSubscriber(modid = Theft.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientStuff {
 
-	@SubscribeEvent
-	public void onSetup(FMLClientSetupEvent e) {
-		ScreenManager.register(Theft.CUSTOM_CHEST.get(), TheftChestScreen::new);
+	public static void init(FMLClientSetupEvent e) {
+		e.enqueueWork(() -> {
+			System.out.println("Hello world from Client stuff");
+			ScreenManager.register(Theft.CUSTOM_CHEST.get(), TheftChestScreen::new);
+		});
 	}
 }

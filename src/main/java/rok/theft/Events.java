@@ -11,17 +11,23 @@ import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import rok.theft.container.CustomChestContainer;
 import rok.theft.container.TargetPlayerInventory;
 import rok.theft.items.ThiefGlooveItem;
 import rok.theft.server.TheftAction;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /*
  * @author Rok created on 11/08/2022
  */
 public class Events {
+	// TARGET | WATCHING
+	private static final Map<UUID, UUID> watching = new HashMap<>();
 
 	@SubscribeEvent
 	public void onInteract(PlayerInteractEvent.EntityInteractSpecific e) {
