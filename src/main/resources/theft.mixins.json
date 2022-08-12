@@ -1,12 +1,15 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "rok.theft.mixin",
+  "package": "rok.theft.mixins",
   "compatibilityLevel": "JAVA_8",
   "refmap": "theft.refmap.json",
   "mixins": [
+    "MixinSlot"
   ],
   "client": [
+    "AccessorChestScreen",
+    "MixinTheftChestScreen"
   ],
   "injectors": {
     "defaultRequire": 1

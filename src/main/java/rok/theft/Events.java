@@ -9,10 +9,10 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import rok.theft.container.CustomChestContainer;
+import rok.theft.container.TargetPlayerInventory;
 
 import javax.annotation.Nullable;
 
@@ -36,7 +36,7 @@ public class Events {
 				@Nullable
 				@Override
 				public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player) {
-					return new ChestContainer(ContainerType.GENERIC_9x5, id, inventory, new PlayerInvChest(target), 5);
+					return new CustomChestContainer(ContainerType.GENERIC_9x5, id, inventory, new TargetPlayerInventory(target), 5);
 				}
 			});
 		}
