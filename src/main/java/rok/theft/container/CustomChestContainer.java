@@ -7,6 +7,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,6 +22,7 @@ public class CustomChestContainer extends Container {
 	public CustomChestContainer(int pContainerId, PlayerInventory pPlayerInventory) {
 		this(pContainerId, pPlayerInventory, new Inventory(5 * 9));
 	}
+
 
 	public CustomChestContainer(int pContainerId, PlayerInventory pPlayerInventory, IInventory pContainer) {
 		this(Theft.CUSTOM_CHEST.get(), pContainerId, pPlayerInventory, pContainer, 5);
@@ -74,7 +76,7 @@ public class CustomChestContainer extends Container {
 				if (!this.moveItemStackTo(itemstack1, this.containerRows * 9, this.slots.size(), true)) {
 					return ItemStack.EMPTY;
 				}
-			} else if (!this.moveItemStackTo(itemstack1, 0, this.containerRows * 9, false)) {
+			} else if (!this.moveItemStackTo(itemstack1, 9, this.containerRows * 9, false)) {
 				return ItemStack.EMPTY;
 			}
 

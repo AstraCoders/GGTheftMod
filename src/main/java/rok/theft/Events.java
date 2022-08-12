@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.*;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -33,17 +34,23 @@ public class Events {
 	public void onInteract(PlayerInteractEvent.EntityInteractSpecific e) {
 		if (e.getPlayer().level.isClientSide) return;
 		if (e.getTarget().getType() != EntityType.PLAYER) return;
-
 		TheftAction.doTheft((ServerPlayerEntity) e.getPlayer(),(ServerPlayerEntity) e.getTarget());
 	}
 
-	public static void addToWatchingMap(ServerPlayerEntity player, ServerPlayerEntity target) {
-		watching.put(player.getUUID(), target.getUUID());
+	public static void addToWatchingMap(ServerPlayerEntity target, ServerPlayerEntity player) {
+		if (watching.containsKey(target.getUUID())) {
+			UUID uuid = watching.get(target.getUUID());
+			ServerPlayerEntity pClose = target.getEntity().getServer().getPlayerList().getPlayer(uuid);
+			if(pClose == null) return;
+			pClose.closeContainer();
+			watching.remove(target.getUUID());
+		}
+		watching.put(target.getUUID(), player.getUUID());
 	}
 	// Preventing bugs...
 	@SubscribeEvent
 	public void closeInventory(PlayerContainerEvent.Close e) {
-		if (e.getPlayer().level.isClientSide) return;
+		//if (e.getPlayer().level.isClientSide) return;
 		if (watching.containsValue(e.getPlayer().getUUID())) {
 			UUID uuid = watching.entrySet().stream().filter(it -> it.getValue().equals(e.getPlayer().getUUID())).map(Map.Entry::getKey).findAny().orElse(null);
 			watching.remove(uuid);
@@ -52,7 +59,7 @@ public class Events {
 
 	@SubscribeEvent
 	public void onDie(LivingDeathEvent e) {
-		if (e.getEntity().level.isClientSide) return;
+		//if (e.getEntity().level.isClientSide) return;
 		if (!e.getEntity().getType().equals(EntityType.PLAYER)) return;
 		if (!watching.containsKey(e.getEntity().getUUID())) return;
 		UUID uuid = watching.get(e.getEntity().getUUID());
@@ -68,6 +75,5 @@ public class Events {
 		ServerPlayerEntity player = e.getPlayer().getServer().getPlayerList().getPlayer(uuid);
 		if (player == null) return;
 		player.closeContainer();
-
 	}
 }

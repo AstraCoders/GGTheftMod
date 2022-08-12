@@ -14,7 +14,6 @@ public class ClientStuff {
 
 	public static void init(FMLClientSetupEvent e) {
 		e.enqueueWork(() -> {
-			System.out.println("Hello world from Client stuff");
 			ScreenManager.register(Theft.CUSTOM_CHEST.get(), TheftChestScreen::new);
 		});
 	}

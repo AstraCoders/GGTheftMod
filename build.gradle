@@ -70,7 +70,7 @@ minecraft {
         }
         clientalt {
             parent runs.client
-            args '--username', 'Dev####' //#s get replaced with random numbers when starting
+            args '--username', 'DevTwo'
         }
         server {
             workingDirectory project.file('run')
