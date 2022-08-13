@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  */
 public class ThiefGlooveItem extends Item {
 	public ThiefGlooveItem() {
-		super(new Properties().tab(ItemGroup.TAB_COMBAT).stacksTo(1).durability(Theft.getMainConfig().getThiefConfig().getItemDurability()));
+		super(new Properties().tab(ItemGroup.TAB_COMBAT).stacksTo(1).durability(Theft.getMainConfig().getItemDurability()));
 	}
 
 	@Override

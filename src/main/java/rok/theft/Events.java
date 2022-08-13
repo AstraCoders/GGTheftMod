@@ -3,11 +3,9 @@ package rok.theft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.*;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -17,15 +15,10 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import rok.theft.container.CustomChestContainer;
-import rok.theft.container.TargetPlayerInventory;
-import rok.theft.items.ThiefGlooveItem;
 import rok.theft.server.TheftAction;
 import rok.theft.utils.CooldownUtils;
 import rok.theft.utils.TraceUtils;
 
-import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,7 +46,7 @@ public class Events {
 				player.closeContainer();
 				watching.remove(tarUUID);
 			}
-			if (Theft.getMainConfig().getThiefConfig().isStealTimer()) {
+			if (Theft.getMainConfig().isStealTimer()) {
 				if (!CooldownUtils.isInCooldown(player,"stealing")) {
 					player.closeContainer();
 					watching.remove(tarUUID);
@@ -83,7 +76,7 @@ public class Events {
 		// Removing CD if has
 		CooldownUtils.removeCooldown(e.getPlayer(), "stealing");
 		// Getting if is damageable
-		if (Theft.getMainConfig().getThiefConfig().isDamageItem()) e.getPlayer().getMainHandItem().setDamageValue(e.getPlayer().getMainHandItem().getDamageValue() + 1);
+		if (Theft.getMainConfig().isDamageItem()) e.getPlayer().getMainHandItem().setDamageValue(e.getPlayer().getMainHandItem().getDamageValue() + 1);
 
 	}
 

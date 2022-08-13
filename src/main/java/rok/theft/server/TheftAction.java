@@ -24,8 +24,8 @@ public class TheftAction {
 	public static void doTheft(ServerPlayerEntity target, ServerPlayerEntity player) {
 		Events.addToWatchingMap(target, player);
 
-		if (Theft.getMainConfig().getThiefConfig().isStealTimer()) {
-			CooldownUtils.setCooldown(player, (long) Theft.getMainConfig().getThiefConfig().getStealTime(), "stealing");
+		if (Theft.getMainConfig().isStealTimer()) {
+			CooldownUtils.setCooldown(player, (long) Theft.getMainConfig().getStealTime(), "stealing");
 		}
 		player.openMenu(new INamedContainerProvider() {
 			@Override

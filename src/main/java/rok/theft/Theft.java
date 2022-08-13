@@ -1,28 +1,16 @@
 package rok.theft;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import rok.theft.client.ClientStuff;
 import rok.theft.config.ConfigHelper;
 import rok.theft.config.JsonConfigManager;
@@ -30,9 +18,6 @@ import rok.theft.config.instances.MainConfig;
 import rok.theft.container.CustomChestContainer;
 import rok.theft.init.Registry;
 import rok.theft.items.ThiefGlooveItem;
-
-import java.beans.EventHandler;
-import java.util.stream.Collectors;
 
 @Mod(Theft.MOD_ID)
 public class Theft {
@@ -46,9 +31,16 @@ public class Theft {
 
 	public Theft() {
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+
+		// TODO: carmello vê pq n ta funfando por favo, não entendi muito bem como inicia seu sistema de config
+		configManager = ConfigHelper.getConfig("theft", MainConfig::new, MainConfig.class);
+		mainConfig = configManager.get();
+
+		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(new Events());
+
 		CONTAINER_REGISTRY.register(bus);
 		Registry.ITEMS.register(bus);
-		MinecraftForge.EVENT_BUS.register(new Events());
 		bus.addListener(this::onClientRegister);
 	}
 	public void onClientRegister(FMLClientSetupEvent e) {
