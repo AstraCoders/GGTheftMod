@@ -13,6 +13,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.World;
+import rok.theft.Theft;
 import rok.theft.server.TheftAction;
 import rok.theft.utils.TraceUtils;
 
@@ -23,7 +24,7 @@ import java.util.function.Consumer;
  */
 public class ThiefGlooveItem extends Item {
 	public ThiefGlooveItem() {
-		super(new Properties().tab(ItemGroup.TAB_COMBAT).stacksTo(1).durability(16));
+		super(new Properties().tab(ItemGroup.TAB_COMBAT).stacksTo(1).durability(Theft.getMainConfig().getThiefConfig().getItemDurability()));
 	}
 
 	@Override

@@ -9,8 +9,10 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.LanguageMap;
 import net.minecraft.util.text.StringTextComponent;
 import rok.theft.Events;
+import rok.theft.Theft;
 import rok.theft.container.CustomChestContainer;
 import rok.theft.container.TargetPlayerInventory;
+import rok.theft.utils.CooldownUtils;
 
 import javax.annotation.Nullable;
 
@@ -21,6 +23,10 @@ public class TheftAction {
 
 	public static void doTheft(ServerPlayerEntity target, ServerPlayerEntity player) {
 		Events.addToWatchingMap(target, player);
+
+		if (Theft.getMainConfig().getThiefConfig().isStealTimer()) {
+			CooldownUtils.setCooldown(player, (long) Theft.getMainConfig().getThiefConfig().getStealTime(), "stealing");
+		}
 		player.openMenu(new INamedContainerProvider() {
 			@Override
 			public ITextComponent getDisplayName() {

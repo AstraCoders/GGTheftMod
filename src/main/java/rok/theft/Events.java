@@ -21,6 +21,7 @@ import rok.theft.container.CustomChestContainer;
 import rok.theft.container.TargetPlayerInventory;
 import rok.theft.items.ThiefGlooveItem;
 import rok.theft.server.TheftAction;
+import rok.theft.utils.CooldownUtils;
 import rok.theft.utils.TraceUtils;
 
 import javax.annotation.Nullable;
@@ -35,16 +36,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Events {
 	// TARGET | WATCHING
 	private static final ConcurrentHashMap<UUID, UUID> watching = new ConcurrentHashMap<>();
-
-	/*@SubscribeEvent
-	public void onInteract(PlayerInteractEvent.EntityInteractSpecific e) {
-		if (e.getPlayer().level.isClientSide) return;
-		if (e.getTarget().getType() != EntityType.PLAYER) return;
-
-		final EntityRayTraceResult rtr = TraceUtils.rayTraceEntity(e.getTarget(), entity -> entity == e.getPlayer(), 6);
-		if (rtr != null) return;
-		TheftAction.doTheft((ServerPlayerEntity) e.getTarget(), (ServerPlayerEntity) e.getPlayer());
-	}*/
 
 	@SubscribeEvent
 	public void serverTickEvent(TickEvent.ServerTickEvent e) {
@@ -61,6 +52,12 @@ public class Events {
 			if (rtr != null) {
 				player.closeContainer();
 				watching.remove(tarUUID);
+			}
+			if (Theft.getMainConfig().getThiefConfig().isStealTimer()) {
+				if (!CooldownUtils.isInCooldown(player,"stealing")) {
+					player.closeContainer();
+					watching.remove(tarUUID);
+				}
 			}
 		});
 	}
@@ -79,11 +76,15 @@ public class Events {
 	// Preventing bugs...
 	@SubscribeEvent
 	public void closeInventory(PlayerContainerEvent.Close e) {
-		if (watching.containsValue(e.getPlayer().getUUID())) {
-			UUID uuid = watching.entrySet().stream().filter(it -> it.getValue().equals(e.getPlayer().getUUID())).map(Map.Entry::getKey).findAny().orElse(null);
-			watching.remove(uuid);
-			e.getPlayer().getMainHandItem().setDamageValue(e.getPlayer().getMainHandItem().getDamageValue()+1);
-		}
+		if (!watching.containsValue(e.getPlayer().getUUID())) return;
+		UUID uuid = watching.entrySet().stream().filter(it -> it.getValue().equals(e.getPlayer().getUUID())).map(Map.Entry::getKey).findAny().orElse(null);
+		watching.remove(uuid);
+
+		// Removing CD if has
+		CooldownUtils.removeCooldown(e.getPlayer(), "stealing");
+		// Getting if is damageable
+		if (Theft.getMainConfig().getThiefConfig().isDamageItem()) e.getPlayer().getMainHandItem().setDamageValue(e.getPlayer().getMainHandItem().getDamageValue() + 1);
+
 	}
 
 	@SubscribeEvent

@@ -24,6 +24,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rok.theft.client.ClientStuff;
+import rok.theft.config.ConfigHelper;
+import rok.theft.config.JsonConfigManager;
+import rok.theft.config.instances.MainConfig;
 import rok.theft.container.CustomChestContainer;
 import rok.theft.init.Registry;
 import rok.theft.items.ThiefGlooveItem;
@@ -34,7 +37,9 @@ import java.util.stream.Collectors;
 @Mod(Theft.MOD_ID)
 public class Theft {
 	public static final String MOD_ID = "theft";
-	//private static final Logger LOGGER = LogManager.getLogger();
+
+	private static JsonConfigManager<MainConfig> configManager;
+	private static MainConfig mainConfig;
 
 	private static final DeferredRegister<ContainerType<?>> CONTAINER_REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
 	public static RegistryObject<ContainerType<CustomChestContainer>> CUSTOM_CHEST = CONTAINER_REGISTRY.register("theft_container", () -> new ContainerType<>(CustomChestContainer::new));
@@ -50,4 +55,17 @@ public class Theft {
 		ClientStuff.init(e);
 	}
 
+	// Config thing...
+	@SubscribeEvent
+	public void onServerEvent(FMLServerStartedEvent e) {
+		configManager = ConfigHelper.getConfig("theft", MainConfig::new, MainConfig.class);
+		mainConfig = configManager.get();
+	}
+	public static void reloadConfig() {
+		configManager = ConfigHelper.getConfig("theft", MainConfig::new, MainConfig.class);
+		mainConfig = configManager.get();
+	}
+	public static MainConfig getMainConfig() {
+		return mainConfig;
+	}
 }
