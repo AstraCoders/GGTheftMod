@@ -6,6 +6,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.LanguageMap;
 import net.minecraft.util.text.StringTextComponent;
 import rok.theft.Events;
 import rok.theft.container.CustomChestContainer;
@@ -23,12 +24,14 @@ public class TheftAction {
 		player.openMenu(new INamedContainerProvider() {
 			@Override
 			public ITextComponent getDisplayName() {
-				return new StringTextComponent("Roubando "+target.getDisplayName().getString());
+				return new StringTextComponent(LanguageMap.getInstance().getOrDefault("gui.theft.stealing") + " " + target.getDisplayName().getString());
 			}
+
 			@Override
 			public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player) {
 				return new CustomChestContainer(id, inventory, new TargetPlayerInventory(target));
 			}
 		});
+
 	}
 }

@@ -36,32 +36,14 @@ public class Events {
 	// TARGET | WATCHING
 	private static final ConcurrentHashMap<UUID, UUID> watching = new ConcurrentHashMap<>();
 
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void onInteract(PlayerInteractEvent.EntityInteractSpecific e) {
 		if (e.getPlayer().level.isClientSide) return;
 		if (e.getTarget().getType() != EntityType.PLAYER) return;
 
 		final EntityRayTraceResult rtr = TraceUtils.rayTraceEntity(e.getTarget(), entity -> entity == e.getPlayer(), 6);
 		if (rtr != null) return;
-		e.getPlayer().setPose(Pose.CROUCHING);
 		TheftAction.doTheft((ServerPlayerEntity) e.getTarget(), (ServerPlayerEntity) e.getPlayer());
-	}
-
-	/*@SubscribeEvent
-	public void tickEvent(TickEvent.PlayerTickEvent e) {
-		if (watching.isEmpty()) return;
-		if (!watching.containsKey(e.player.getUUID())) return;
-		if (e.player.getEntity().getServer() == null) return;
-
-		UUID uuid = watching.get(e.player.getUUID());
-		ServerPlayerEntity pClose = e.player.getServer().getPlayerList().getPlayer(uuid);
-		if (pClose == null) return;
-		final EntityRayTraceResult rtr = TraceUtils.rayTraceEntity(e.player, entity -> entity == pClose, 6);
-		if (rtr != null) {
-			addToWatchingMap((ServerPlayerEntity) e.player, pClose);
-			e.player.closeContainer();
-			watching.remove(e.player.getUUID());
-		}
 	}*/
 
 	@SubscribeEvent
@@ -77,21 +59,9 @@ public class Events {
 			player.setPose(Pose.CROUCHING);
 			final EntityRayTraceResult rtr = TraceUtils.rayTraceEntity(target, entity -> entity == player, 6);
 			if (rtr != null) {
-				//addToWatchingMap((ServerPlayerEntity) e.player, pClose);
 				player.closeContainer();
 				watching.remove(tarUUID);
 			}
-		});
-	}
-
-	@SubscribeEvent
-	public void chatEvent(LivingEvent.LivingJumpEvent e) {
-		if (!(e.getEntity() instanceof PlayerEntity)) return;
-		if (!watching.containsKey(e.getEntity().getUUID())) return;
-		if (e.getEntity().getServer() == null) return;
-
-		watching.forEach((uuid, uuid2) -> {
-			e.getEntity().sendMessage(new StringTextComponent("\nTarget: " + e.getEntity().getServer().getPlayerList().getPlayer(uuid).getDisplayName().getString() + "\nPlayer: " + e.getEntity().getServer().getPlayerList().getPlayer(uuid2).getDisplayName().getString() + "\n"), e.getEntity().getUUID());
 		});
 	}
 
@@ -104,10 +74,6 @@ public class Events {
 			watching.remove(target.getUUID());
 		}
 		watching.put(target.getUUID(), player.getUUID());
-
-		watching.forEach((uuid, uuid2) -> {
-			player.sendMessage(new StringTextComponent("\nTarget: " + target.getEntity().getServer().getPlayerList().getPlayer(uuid).getDisplayName().getString() + "\nPlayer: " + target.getEntity().getServer().getPlayerList().getPlayer(uuid2).getDisplayName().getString() + "\n"), player.getUUID());
-		});
 	}
 
 	// Preventing bugs...
@@ -116,6 +82,7 @@ public class Events {
 		if (watching.containsValue(e.getPlayer().getUUID())) {
 			UUID uuid = watching.entrySet().stream().filter(it -> it.getValue().equals(e.getPlayer().getUUID())).map(Map.Entry::getKey).findAny().orElse(null);
 			watching.remove(uuid);
+			e.getPlayer().getMainHandItem().setDamageValue(e.getPlayer().getMainHandItem().getDamageValue()+1);
 		}
 	}
 

@@ -25,6 +25,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rok.theft.client.ClientStuff;
 import rok.theft.container.CustomChestContainer;
+import rok.theft.init.Registry;
+import rok.theft.items.ThiefGlooveItem;
 
 import java.beans.EventHandler;
 import java.util.stream.Collectors;
@@ -40,6 +42,7 @@ public class Theft {
 	public Theft() {
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		CONTAINER_REGISTRY.register(bus);
+		Registry.ITEMS.register(bus);
 		MinecraftForge.EVENT_BUS.register(new Events());
 		bus.addListener(this::onClientRegister);
 	}
