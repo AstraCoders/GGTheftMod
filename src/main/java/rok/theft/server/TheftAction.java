@@ -18,8 +18,8 @@ import javax.annotation.Nullable;
  */
 public class TheftAction {
 
-	public static void doTheft(ServerPlayerEntity player, ServerPlayerEntity target) {
-		Events.addToWatchingMap(player, target);
+	public static void doTheft(ServerPlayerEntity target, ServerPlayerEntity player) {
+		Events.addToWatchingMap(target, player);
 		player.openMenu(new INamedContainerProvider() {
 			@Override
 			public ITextComponent getDisplayName() {
