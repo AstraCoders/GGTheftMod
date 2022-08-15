@@ -7,11 +7,10 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import rok.theft.Theft;
+import rok.theft.init.Registry;
 
 /*
  * @author Rok, Pedro Lucas N M Machado created on 12/08/2022
@@ -19,14 +18,16 @@ import rok.theft.Theft;
 public class CustomChestContainer extends Container {
 	private final IInventory container;
 	private final int containerRows;
+
 	public CustomChestContainer(int pContainerId, PlayerInventory pPlayerInventory) {
 		this(pContainerId, pPlayerInventory, new Inventory(5 * 9));
 	}
 
 
 	public CustomChestContainer(int pContainerId, PlayerInventory pPlayerInventory, IInventory pContainer) {
-		this(Theft.CUSTOM_CHEST.get(), pContainerId, pPlayerInventory, pContainer, 5);
+		this(Registry.CUSTOM_CHEST.get(), pContainerId, pPlayerInventory, pContainer, 5);
 	}
+
 	public CustomChestContainer(ContainerType<?> pType, int pContainerId, PlayerInventory pPlayerInventory, IInventory pContainer, int pRows) {
 		super(pType, pContainerId);
 		checkContainerSize(pContainer, pRows * 9);
@@ -35,19 +36,19 @@ public class CustomChestContainer extends Container {
 		pContainer.startOpen(pPlayerInventory.player);
 		int i = (this.containerRows - 4) * 18;
 
-		for(int j = 0; j < this.containerRows; ++j) {
-			for(int k = 0; k < 9; ++k) {
+		for (int j = 0; j < this.containerRows; ++j) {
+			for (int k = 0; k < 9; ++k) {
 				this.addSlot(new CustomSlot(pContainer, k + j * 9, 8 + k * 18, 18 + j * 18));
 			}
 		}
 
-		for(int l = 0; l < 3; ++l) {
-			for(int j1 = 0; j1 < 9; ++j1) {
+		for (int l = 0; l < 3; ++l) {
+			for (int j1 = 0; j1 < 9; ++j1) {
 				this.addSlot(new CustomSlot(pPlayerInventory, j1 + l * 9 + 9, 8 + j1 * 18, 103 + l * 18 + i));
 			}
 		}
 
-		for(int i1 = 0; i1 < 9; ++i1) {
+		for (int i1 = 0; i1 < 9; ++i1) {
 			this.addSlot(new CustomSlot(pPlayerInventory, i1, 8 + i1 * 18, 161 + i));
 		}
 		for (int x = 4; x < 8; x++) {
@@ -96,10 +97,6 @@ public class CustomChestContainer extends Container {
 	public void removed(PlayerEntity pPlayer) {
 		super.removed(pPlayer);
 		this.container.stopOpen(pPlayer);
-	}
-
-	public IInventory getContainer() {
-		return this.container;
 	}
 
 	@OnlyIn(Dist.CLIENT)

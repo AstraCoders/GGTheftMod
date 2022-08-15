@@ -1,7 +1,6 @@
 package rok.theft.utils;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
@@ -25,8 +24,7 @@ public class TraceUtils {
 		double d0 = distance * distance;
 		Entity entity = null;
 		Vector3d vector3d = null;
-		for (Entity entity1 : world.getEntities(shooter, shooter.getBoundingBox()
-				                                                 .expandTowards(shooter.getViewVector(1.0F).scale(distance * distance)).inflate(1.0D), filter)) {
+		for (Entity entity1 : world.getEntities(shooter, shooter.getBoundingBox().expandTowards(shooter.getViewVector(1.0F).scale(distance * distance)).inflate(1.0D), filter)) {
 			AxisAlignedBB axisalignedbb = entity1.getBoundingBox().inflate(entity1.getPickRadius());
 			Optional<Vector3d> optional = axisalignedbb.clip(startVec, endVec);
 			if (axisalignedbb.contains(startVec)) {
@@ -60,6 +58,7 @@ public class TraceUtils {
 		double distance = player.getAttributeValue(ForgeMod.REACH_DISTANCE.get());
 		return rayTraceBlock(player, player.isCreative() ? distance : distance - 0.5D);
 	}
+
 	@Nullable
 	public static BlockRayTraceResult rayTraceBlock(PlayerEntity player, double range) {
 		World world = player.level;
@@ -71,6 +70,4 @@ public class TraceUtils {
 		RayTraceContext context = new RayTraceContext(start, end, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player);
 		return world.clip(context);
 	}
-
-
 }

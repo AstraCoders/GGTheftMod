@@ -2,20 +2,14 @@ package rok.theft;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import rok.theft.server.TheftAction;
 import rok.theft.utils.CooldownUtils;
 import rok.theft.utils.TraceUtils;
 
@@ -30,8 +24,18 @@ public class Events {
 	// TARGET | WATCHING
 	private static final ConcurrentHashMap<UUID, UUID> watching = new ConcurrentHashMap<>();
 
+	private int tickCount;
+
 	@SubscribeEvent
 	public void serverTickEvent(TickEvent.ServerTickEvent e) {
+		tickCount++;
+		if (tickCount % 4 == 0) {
+			handleTickEvent();
+		}
+		if (tickCount == 40) tickCount = 0;
+	}
+
+	private void handleTickEvent() {
 		if (watching.isEmpty()) return;
 		watching.forEach((tarUUID, plaUUID) -> {
 			ServerPlayerEntity target = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(tarUUID);
@@ -46,11 +50,12 @@ public class Events {
 				player.closeContainer();
 				watching.remove(tarUUID);
 			}
-			if (Theft.getMainConfig().isStealTimer()) {
-				if (!CooldownUtils.isInCooldown(player,"stealing")) {
-					player.closeContainer();
-					watching.remove(tarUUID);
-				}
+			if (!Config.COMMON.STEAL_TIMER.get()) {
+				return;
+			}
+			if (!CooldownUtils.isInCooldown(player, "stealing")) {
+				player.closeContainer();
+				watching.remove(tarUUID);
 			}
 		});
 	}
@@ -71,17 +76,20 @@ public class Events {
 	public void closeInventory(PlayerContainerEvent.Close e) {
 		if (!watching.containsValue(e.getPlayer().getUUID())) return;
 		UUID uuid = watching.entrySet().stream().filter(it -> it.getValue().equals(e.getPlayer().getUUID())).map(Map.Entry::getKey).findAny().orElse(null);
+		if (uuid == null) return;
 		watching.remove(uuid);
 
-		// Removing CD if has
+		// Removing CD if it has
 		CooldownUtils.removeCooldown(e.getPlayer(), "stealing");
 		// Getting if is damageable
-		if (Theft.getMainConfig().isDamageItem()) e.getPlayer().getMainHandItem().setDamageValue(e.getPlayer().getMainHandItem().getDamageValue() + 1);
+		if (Config.COMMON.DAMAGE_ITEM.get())
+			e.getPlayer().getMainHandItem().setDamageValue(e.getPlayer().getMainHandItem().getDamageValue() + 1);
 
 	}
 
 	@SubscribeEvent
 	public void onDie(LivingDeathEvent e) {
+		if (e.getEntity().level.isClientSide) return;
 		if (!e.getEntity().getType().equals(EntityType.PLAYER)) return;
 		if (!watching.containsKey(e.getEntity().getUUID())) return;
 		UUID uuid = watching.get(e.getEntity().getUUID());
@@ -92,6 +100,7 @@ public class Events {
 
 	@SubscribeEvent
 	public void onLoggedOut(PlayerEvent.PlayerLoggedOutEvent e) {
+		if (e.getEntity().level.isClientSide) return;
 		if (!watching.containsKey(e.getPlayer().getUUID())) return;
 		UUID uuid = watching.get(e.getPlayer().getUUID());
 		ServerPlayerEntity player = e.getPlayer().getServer().getPlayerList().getPlayer(uuid);

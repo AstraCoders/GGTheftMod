@@ -13,18 +13,16 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.World;
-import rok.theft.Theft;
+import rok.theft.Config;
 import rok.theft.server.TheftAction;
 import rok.theft.utils.TraceUtils;
-
-import java.util.function.Consumer;
 
 /*
  * @author Rok, Pedro Lucas N M Machado created on 12/08/2022
  */
 public class ThiefGlooveItem extends Item {
 	public ThiefGlooveItem() {
-		super(new Properties().tab(ItemGroup.TAB_COMBAT).stacksTo(1).durability(Theft.getMainConfig().getItemDurability()));
+		super(new Properties().tab(ItemGroup.TAB_COMBAT).stacksTo(1).durability(Config.COMMON.ITEM_DURABILITY.get()));
 	}
 
 	@Override

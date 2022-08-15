@@ -1,10 +1,8 @@
 package rok.theft.container;
 
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 /*
@@ -19,13 +17,14 @@ public class CustomSlot extends Slot {
 
 	@Override
 	public boolean mayPlace(ItemStack pStack) {
-			return pStack.getItem() instanceof ArmorItem || getSlotIndex() > 4;
+		return pStack.getItem() instanceof ArmorItem || getSlotIndex() > 4;
 	}
 
 	@Override
 	public boolean isActive() {
 		return active;
 	}
+
 	public void setActive(boolean active) {
 		this.active = active;
 	}

@@ -35,6 +35,7 @@ public class TargetPlayerInventory implements IInventory {
 
 		return -1;
 	}
+
 	public boolean isInvalidSlot(int index) {
 		return index >= 4 && index < 8;
 	}

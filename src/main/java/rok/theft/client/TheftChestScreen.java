@@ -20,8 +20,6 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 	public TheftChestScreen(CustomChestContainer pChestMenu, PlayerInventory pPlayerInventory, ITextComponent pTitle) {
 		super(pChestMenu, pPlayerInventory, pTitle);
 		this.passEvents = false;
-		int i = 222;
-		int j = 114;
 		this.containerRows = pChestMenu.getRowCount();
 		this.imageHeight = 114 + this.containerRows * 18;
 		this.inventoryLabelY = this.imageHeight - 94;
