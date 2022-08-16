@@ -1,5 +1,6 @@
 package rok.theft.container;
 
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ArmorItem;

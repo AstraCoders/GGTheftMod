@@ -3,6 +3,7 @@ package rok.theft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -18,6 +19,7 @@ import rok.theft.utils.TraceUtils;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /*
  * @author Rok created on 11/08/2022
@@ -46,7 +48,6 @@ public class Events {
 				watching.remove(tarUUID);
 				return;
 			}
-			player.setPose(Pose.CROUCHING);
 			final EntityRayTraceResult rtr = TraceUtils.rayTraceEntity(target, entity -> entity == player, 6);
 			if (rtr != null) {
 				player.closeContainer();
@@ -84,10 +85,7 @@ public class Events {
 
 		// Removing CD if it has
 		CooldownUtils.removeCooldown(e.getPlayer(), "stealing");
-		// Getting if is damageable
-		if (Config.COMMON.DAMAGE_ITEM.get())
-			e.getPlayer().getMainHandItem().setDamageValue(e.getPlayer().getMainHandItem().getDamageValue() + 1);
-
+		e.getPlayer().setForcedPose(null);
 	}
 
 	@SubscribeEvent
