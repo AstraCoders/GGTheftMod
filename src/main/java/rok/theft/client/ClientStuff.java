@@ -1,6 +1,10 @@
 package rok.theft.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import rok.theft.init.Registry;
 
@@ -9,7 +13,16 @@ import rok.theft.init.Registry;
  */
 public class ClientStuff {
 
+	public static int theftTime = -1;
+
 	public static void init(FMLClientSetupEvent e) {
-		e.enqueueWork(() -> ScreenManager.register(Registry.CUSTOM_CHEST.get(), TheftChestScreen::new));
+		e.enqueueWork(() -> {
+			ScreenManager.register(Registry.CUSTOM_CHEST.get(), TheftChestScreen::new);
+			MinecraftForge.EVENT_BUS.register(new ClientStuff());
+		});
+	}
+
+	public void startSneaking() {
+		Minecraft.getInstance().player.input.shiftKeyDown = true;
 	}
 }

@@ -1,5 +1,7 @@
 package rok.theft;
 
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -7,12 +9,27 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 import rok.theft.client.ClientStuff;
 import rok.theft.init.Registry;
+import rok.theft.packets.StartTheftPacket;
+
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static org.apache.http.params.CoreProtocolPNames.PROTOCOL_VERSION;
+
 
 @Mod(Theft.MOD_ID)
 public class Theft {
+
 	public static final String MOD_ID = "theft";
+	public static final SimpleChannel PACKET_HANDLER = NetworkRegistry.newSimpleChannel(new ResourceLocation(MOD_ID, "connection"),
+			() -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
+	private static int messageID = 0;
 
 	public Theft() {
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -25,8 +42,15 @@ public class Theft {
 		Registry.ITEMS.register(bus);
 		Registry.CONTAINER_REGISTRY.register(bus);
 		bus.addListener(this::onClientRegister);
+		addNetworkMessage(StartTheftPacket.class, StartTheftPacket::buffer, StartTheftPacket::new, StartTheftPacket::handle);
 	}
+
 	public void onClientRegister(FMLClientSetupEvent e) {
 		ClientStuff.init(e);
+	}
+
+	public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, PacketBuffer> encoder, Function<PacketBuffer, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
+		PACKET_HANDLER.registerMessage(messageID, messageType, encoder, decoder, messageConsumer);
+		messageID++;
 	}
 }
