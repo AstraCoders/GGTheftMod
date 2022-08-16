@@ -9,7 +9,9 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import rok.theft.packets.StartTheftPacket;
 import rok.theft.utils.CooldownUtils;
 import rok.theft.utils.TraceUtils;
 
@@ -53,6 +55,7 @@ public class Events {
 			if (!Config.COMMON.STEAL_TIMER.get()) {
 				return;
 			}
+			Theft.PACKET_HANDLER.sendTo(new StartTheftPacket((int) CooldownUtils.getCooldownTimeSec(player, "stealing")), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 			if (!CooldownUtils.isInCooldown(player, "stealing")) {
 				player.closeContainer();
 				watching.remove(tarUUID);

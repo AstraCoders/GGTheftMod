@@ -6,7 +6,8 @@ import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.*;
+import rok.theft.Config;
 import rok.theft.Theft;
 import rok.theft.container.CustomChestContainer;
 
@@ -34,6 +35,32 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 		this.renderBackground(pMatrixStack);
 		super.render(pMatrixStack, pMouseX, pMouseY, pPartialTicks);
 		this.renderTooltip(pMatrixStack, pMouseX, pMouseY);
+
+		// Rendering cd
+		if (!Config.COMMON.STEAL_TIMER.get()) return;
+		if (ClientStuff.theftTime == -1) return;
+		int i = (this.width - this.imageWidth) / 2;
+		int j = (this.height - this.imageHeight) / 2;
+
+		int cdValue = ClientStuff.theftTime + 1;
+		// handle alignment
+		int leftMove = 0;
+		if (cdValue > 99) {
+			leftMove -= 12;
+		} else if (cdValue > 9) {
+			leftMove -= 6;
+		}
+
+		// handle color
+		int color = -12829636;
+		if (cdValue < 2) {
+			color = 11141120;
+		} else if (cdValue < 4) {
+			color = 16733525;
+		}
+
+		ITextComponent cd = new StringTextComponent(String.format("%d", cdValue));
+		this.font.draw(pMatrixStack, cd, i + 163 + leftMove, j + 6, color);
 	}
 
 	protected void renderBg(MatrixStack pMatrixStack, float pPartialTicks, int pX, int pY) {

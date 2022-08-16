@@ -28,7 +28,9 @@ public class TheftAction {
 		player.openMenu(new INamedContainerProvider() {
 			@Override
 			public ITextComponent getDisplayName() {
-				return new StringTextComponent(LanguageMap.getInstance().getOrDefault("gui.theft.stealing") + " " + target.getDisplayName().getString());
+				if (Config.COMMON.STEAL_TITLE.get())
+					return new StringTextComponent(LanguageMap.getInstance().getOrDefault("gui.theft.stealing") + " " + target.getDisplayName().getString());
+				return new StringTextComponent(" ");
 			}
 
 			@Override
