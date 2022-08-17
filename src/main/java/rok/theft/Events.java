@@ -60,15 +60,22 @@ public class Events {
 			if (!Config.COMMON.STEAL_TIMER.get()) {
 				return;
 			}
-			Theft.PACKET_HANDLER.sendTo(new StartTheftPacket((int) CooldownUtils.getCooldownTimeSec(player, "stealing")), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+			long cdTime = CooldownUtils.getCooldownTimeSec(player, "stealing");
+			Theft.PACKET_HANDLER.sendTo(new StartTheftPacket((int) cdTime), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 			if (!CooldownUtils.isInCooldown(player, "stealing")) {
 				player.closeContainer();
 				watching.remove(tarUUID);
 			}
 
 			// PlaySound
-			if (tickCount % 20 == 0 && CooldownUtils.getCooldownTimeSec(player, "stealing") < 4) {
-				player.playSound(SoundEvents.LEASH_KNOT_BREAK, 0.5F, 1F);
+			if (tickCount % 40 == 0 && cdTime >= 3) {
+				target.playSound(SoundEvents.NOTE_BLOCK_BANJO, 0.1F, 1F);
+			} else
+			if (tickCount % 20 == 0 && cdTime < 3) {
+				target.playSound(SoundEvents.NOTE_BLOCK_BANJO, 0.1F, 1F);
+			} else
+			if (tickCount % 4 == 0 && cdTime < 1) {
+				target.playSound(SoundEvents.NOTE_BLOCK_BANJO, 0.1F, 1F);
 			}
 		});
 	}
@@ -96,7 +103,7 @@ public class Events {
 		CooldownUtils.removeCooldown(e.getPlayer(), "stealing");
 
 		// Play soundEffect
-		e.getPlayer().level.playSound(e.getPlayer(), e.getPlayer(), SoundEvents.LEASH_KNOT_BREAK, SoundCategory.AMBIENT, 0.5F, 1F);
+		e.getPlayer().level.playSound(null, e.getPlayer(), SoundEvents.LEASH_KNOT_BREAK, SoundCategory.PLAYERS, 0.5F, 1F);
 
 		e.getPlayer().setForcedPose(null);
 	}

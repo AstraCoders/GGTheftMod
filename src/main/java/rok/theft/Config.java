@@ -15,13 +15,16 @@ public class Config {
 		public final ForgeConfigSpec.IntValue STEAL_TIME;
 		public final ForgeConfigSpec.BooleanValue STEAL_TITLE;
 
+		public final ForgeConfigSpec.BooleanValue PICKUP_BOTH;
+
 		Common(ForgeConfigSpec.Builder builder) {
 			builder.comment("Common config").push("common");
 			DAMAGE_ITEM = builder.comment("Should damage item on every use").define("damage_item", true);
 			ITEM_DURABILITY = builder.comment("Item durability").defineInRange("item_durability", 16, 0, 255);
-			STEAL_TIMER = builder.comment("Player should have time to steal another player?").define("steal_timer_enabled", true);
+			STEAL_TIMER = builder.comment("Should player have time to steal another player?").define("steal_timer_enabled", true);
 			STEAL_TIME = builder.comment("Time to steal player").defineInRange("steal_time", 10, 0, 120);
 			STEAL_TITLE = builder.comment("Stealing inventory should have a title? (Example: \"Stealing Steve\")").define("steal_title_enabled", true);
+			PICKUP_BOTH = builder.comment("Should the player  be able to pickup and place item on target's inventory? (Default: just pickup)").define("pickup_both", false);
 			builder.pop();
 		}
 	}

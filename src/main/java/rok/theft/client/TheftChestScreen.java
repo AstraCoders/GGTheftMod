@@ -42,7 +42,7 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 		int i = (this.width - this.imageWidth) / 2;
 		int j = (this.height - this.imageHeight) / 2;
 
-		int cdValue = ClientStuff.theftTime + 1;
+		int cdValue = ClientStuff.theftTime + 1 > Config.COMMON.STEAL_TIME.get() ? Config.COMMON.STEAL_TIME.get() : ClientStuff.theftTime +1 ;
 		// handle alignment
 		int leftMove = 0;
 		if (cdValue > 99) {

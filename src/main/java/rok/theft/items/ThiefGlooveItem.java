@@ -8,9 +8,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.World;
 import rok.theft.Config;
@@ -45,6 +43,8 @@ public class ThiefGlooveItem extends Item {
 		pPlayer.setForcedPose(Pose.CROUCHING);
 		TheftAction.doTheft((ServerPlayerEntity) pTarget,(ServerPlayerEntity) pPlayer);
 
+		// Adding SFX
+		pPlayer.level.playSound(null, pPlayer, SoundEvents.LEASH_KNOT_BREAK, SoundCategory.PLAYERS, 0.2F, 1F);
 		return ActionResultType.SUCCESS;
 	}
 
