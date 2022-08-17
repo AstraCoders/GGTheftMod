@@ -4,11 +4,15 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -34,12 +38,12 @@ public class Events {
 	public void serverTickEvent(TickEvent.ServerTickEvent e) {
 		tickCount++;
 		if (tickCount % 4 == 0) {
-			handleTickEvent();
+			handleTickEvent(tickCount);
 		}
 		if (tickCount == 40) tickCount = 0;
 	}
 
-	private void handleTickEvent() {
+	private void handleTickEvent(int tickCount) {
 		if (watching.isEmpty()) return;
 		watching.forEach((tarUUID, plaUUID) -> {
 			ServerPlayerEntity target = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(tarUUID);
@@ -60,6 +64,11 @@ public class Events {
 			if (!CooldownUtils.isInCooldown(player, "stealing")) {
 				player.closeContainer();
 				watching.remove(tarUUID);
+			}
+
+			// PlaySound
+			if (tickCount % 20 == 0 && CooldownUtils.getCooldownTimeSec(player, "stealing") < 4) {
+				player.playSound(SoundEvents.LEASH_KNOT_BREAK, 0.5F, 1F);
 			}
 		});
 	}
@@ -85,6 +94,10 @@ public class Events {
 
 		// Removing CD if it has
 		CooldownUtils.removeCooldown(e.getPlayer(), "stealing");
+
+		// Play soundEffect
+		e.getPlayer().level.playSound(e.getPlayer(), e.getPlayer(), SoundEvents.LEASH_KNOT_BREAK, SoundCategory.AMBIENT, 0.5F, 1F);
+
 		e.getPlayer().setForcedPose(null);
 	}
 

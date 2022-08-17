@@ -22,7 +22,4 @@ public class ClientStuff {
 		});
 	}
 
-	public void startSneaking() {
-		Minecraft.getInstance().player.input.shiftKeyDown = true;
-	}
 }
