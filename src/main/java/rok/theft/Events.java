@@ -102,6 +102,13 @@ public class Events {
 		// Removing CD if it has
 		CooldownUtils.removeCooldown(e.getPlayer(), "stealing");
 
+		// Getting if is damageable
+		if (Config.COMMON.DAMAGE_ITEM.get()) {
+			e.getPlayer().getMainHandItem().hurtAndBreak(1, e.getPlayer(), (p_220041_1_) -> {
+				p_220041_1_.broadcastBreakEvent(e.getPlayer().getUsedItemHand());
+			});
+		}
+
 		// Play soundEffect
 		e.getPlayer().level.playSound(null, e.getPlayer(), SoundEvents.LEASH_KNOT_BREAK, SoundCategory.PLAYERS, 0.5F, 1F);
 

@@ -20,7 +20,7 @@ import rok.theft.utils.TraceUtils;
  */
 public class ThiefGlooveItem extends Item {
 	public ThiefGlooveItem() {
-		super(new Properties().tab(ItemGroup.TAB_COMBAT).stacksTo(1).defaultDurability(Config.COMMON.ITEM_DURABILITY.get()));
+		super(new Properties().tab(ItemGroup.TAB_COMBAT).stacksTo(1).durability(Config.COMMON.ITEM_DURABILITY.get()));
 	}
 
 	@Override
@@ -30,15 +30,8 @@ public class ThiefGlooveItem extends Item {
 
 		final EntityRayTraceResult rtr = TraceUtils.rayTraceEntity(pTarget, entity -> entity == pPlayer, 6);
 		if (rtr != null) return ActionResultType.FAIL;
-
-		// Getting if is damageable
-		if (Config.COMMON.DAMAGE_ITEM.get()) {
-			pPlayer.getMainHandItem().hurtAndBreak(1, pPlayer, (p_220041_1_) -> {
-				p_220041_1_.broadcastBreakEvent(pHand);
-			});
-		}
-
 		if (pPlayer.level.isClientSide) return ActionResultType.FAIL;
+
 		pPlayer.setForcedPose(Pose.CROUCHING);
 		TheftAction.doTheft((ServerPlayerEntity) pTarget, (ServerPlayerEntity) pPlayer);
 
