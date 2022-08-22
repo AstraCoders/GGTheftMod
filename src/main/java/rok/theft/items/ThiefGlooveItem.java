@@ -25,7 +25,6 @@ public class ThiefGlooveItem extends Item {
 
 	@Override
 	public ActionResultType interactLivingEntity(ItemStack pStack, PlayerEntity pPlayer, LivingEntity pTarget, Hand pHand) {
-		if (pPlayer.level.isClientSide) return ActionResultType.FAIL;
 		if (pTarget.getType() != EntityType.PLAYER) return ActionResultType.FAIL;
 		if (!pPlayer.isCrouching()) return ActionResultType.FAIL;
 
@@ -34,14 +33,14 @@ public class ThiefGlooveItem extends Item {
 
 		// Getting if is damageable
 		if (Config.COMMON.DAMAGE_ITEM.get()) {
-			// TODO: help me to dar dano no item carmello
 			pPlayer.getMainHandItem().hurtAndBreak(1, pPlayer, (p_220041_1_) -> {
 				p_220041_1_.broadcastBreakEvent(pHand);
 			});
 		}
 
+		if (pPlayer.level.isClientSide) return ActionResultType.FAIL;
 		pPlayer.setForcedPose(Pose.CROUCHING);
-		TheftAction.doTheft((ServerPlayerEntity) pTarget,(ServerPlayerEntity) pPlayer);
+		TheftAction.doTheft((ServerPlayerEntity) pTarget, (ServerPlayerEntity) pPlayer);
 
 		// Adding SFX
 		pPlayer.level.playSound(null, pPlayer, SoundEvents.LEASH_KNOT_BREAK, SoundCategory.PLAYERS, 0.2F, 1F);
