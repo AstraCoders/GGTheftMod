@@ -18,8 +18,8 @@ import rok.theft.utils.TraceUtils;
 /*
  * @author Rok, Pedro Lucas N M Machado created on 12/08/2022
  */
-public class ThiefGlooveItem extends Item {
-	public ThiefGlooveItem() {
+public class ThiefGloveItem extends Item {
+	public ThiefGloveItem() {
 		super(new Properties().tab(ItemGroup.TAB_COMBAT).stacksTo(1).durability(Config.COMMON.ITEM_DURABILITY.get()));
 	}
 

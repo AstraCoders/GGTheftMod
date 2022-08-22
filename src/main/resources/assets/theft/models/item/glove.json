@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "theft:items/thief_gloove"
+    "layer0": "theft:items/thief_glove"
   }
 }
