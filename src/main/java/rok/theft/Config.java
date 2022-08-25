@@ -27,7 +27,7 @@ public class Config {
 			STEAL_TITLE = builder.comment("Stealing inventory should have a title? (Example: \"Stealing Steve\")").define("steal_title_enabled", true);
 			PICKUP_BOTH = builder.comment("Should the player be able to pickup and place item on target's inventory? (Default: just pickup)").define("pickup_both", false);
 			SHOW_MISSING = builder.comment("The player must know which slot was stolen?").define("show_missing", true);
-			SHOW_MISSING_HOVER = builder.comment("Should Stolen Item has hover info?").define("show_missing_hover", true);
+			SHOW_MISSING_HOVER = builder.comment("Should Stolen Item has hover info?").define("show_missing_hover", false);
 			builder.pop();
 		}
 	}
