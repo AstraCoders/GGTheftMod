@@ -8,8 +8,10 @@
     "MixinContainer"
   ],
   "client": [
+    "MixinMinecraft"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "verbose": true
 }
