@@ -9,15 +9,22 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import rok.theft.Config;
 import rok.theft.init.Registry;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /*
  * @author Rok, Pedro Lucas N M Machado created on 12/08/2022
  */
 public class CustomChestContainer extends Container {
 	private final IInventory container;
+	private final Set<Integer> initialSlots = new HashSet<>();
 	private final int containerRows;
 
 	public CustomChestContainer(int pContainerId, PlayerInventory pPlayerInventory) {
@@ -36,6 +43,14 @@ public class CustomChestContainer extends Container {
 		this.containerRows = pRows;
 		pContainer.startOpen(pPlayerInventory.player);
 		int i = (this.containerRows - 4) * 18;
+
+		if (Config.COMMON.SHOW_MISSING.get()) {
+			for (int j = 0; j < this.container.getContainerSize(); ++j) {
+				if (!container.getItem(j).isEmpty()) {
+					initialSlots.add(j);
+				}
+			}
+		}
 
 		for (int j = 0; j < this.containerRows; ++j) {
 			for (int k = 0; k < 9; ++k) {
@@ -88,19 +103,22 @@ public class CustomChestContainer extends Container {
 				slot.setChanged();
 			}
 		}
-		if (!((CustomSlot) slot).isPlayerInventory()) {
-			slot.set(Registry.MISSING.get().getDefaultInstance());
-		}
-
 		return itemstack;
 	}
 
 	@Override
 	public ItemStack clicked(int pSlotId, int pDragType, ClickType pClickType, PlayerEntity pPlayer) {
-		CustomSlot slot = (CustomSlot) getSlot(pSlotId);
-		if (!slot.getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
-			slot.remove(1);
+		if (pSlotId < 0) return super.clicked(pSlotId, pDragType, pClickType, pPlayer);
+		Slot slot = getSlot(pSlotId);
+		if (slot.getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
+			pPlayer.playSound(SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1F,2F);
+			slot.remove(slot.getItem().getCount());
+			return ItemStack.EMPTY;
+		} else
+		if (slot.getItem().sameItemStackIgnoreDurability(Registry.THIEF_GLOVE.get().getDefaultInstance())) {
+			return ItemStack.EMPTY;
 		}
+
 		return super.clicked(pSlotId, pDragType, pClickType, pPlayer);
 	}
 
@@ -108,6 +126,13 @@ public class CustomChestContainer extends Container {
 	 * Called when the container is closed.
 	 */
 	public void removed(PlayerEntity pPlayer) {
+		if (Config.COMMON.SHOW_MISSING.get()) {
+			for (Integer initialSlot : initialSlots) {
+				if (!getSlot(initialSlot).hasItem()) {
+					getSlot(initialSlot).set(Registry.MISSING.get().getDefaultInstance());
+				}
+			}
+		}
 		super.removed(pPlayer);
 		this.container.stopOpen(pPlayer);
 	}

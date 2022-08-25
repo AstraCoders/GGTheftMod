@@ -14,8 +14,8 @@ public class Config {
 		public final ForgeConfigSpec.BooleanValue STEAL_TIMER;
 		public final ForgeConfigSpec.IntValue STEAL_TIME;
 		public final ForgeConfigSpec.BooleanValue STEAL_TITLE;
-
 		public final ForgeConfigSpec.BooleanValue PICKUP_BOTH;
+		public final ForgeConfigSpec.BooleanValue SHOW_MISSING;
 
 		Common(ForgeConfigSpec.Builder builder) {
 			builder.comment("Common config").push("common");
@@ -24,7 +24,8 @@ public class Config {
 			STEAL_TIMER = builder.comment("Should player have time to steal another player?").define("steal_timer_enabled", true);
 			STEAL_TIME = builder.comment("Time to steal player").defineInRange("steal_time", 10, 0, 120);
 			STEAL_TITLE = builder.comment("Stealing inventory should have a title? (Example: \"Stealing Steve\")").define("steal_title_enabled", true);
-			PICKUP_BOTH = builder.comment("Should the player  be able to pickup and place item on target's inventory? (Default: just pickup)").define("pickup_both", false);
+			PICKUP_BOTH = builder.comment("Should the player be able to pickup and place item on target's inventory? (Default: just pickup)").define("pickup_both", false);
+			SHOW_MISSING = builder.comment("The player must know which slot was stolen?").define("show_missing", true);
 			builder.pop();
 		}
 	}

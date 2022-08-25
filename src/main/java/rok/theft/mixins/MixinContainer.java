@@ -22,12 +22,12 @@ import rok.theft.init.Registry;
 public abstract class MixinContainer {
 	@Inject(method = "doClick", at = @At("HEAD"))
 	public void doClick(int pSlotId, int pDragType, ClickType pClickType, PlayerEntity pPlayer, CallbackInfoReturnable<ItemStack> cir) {
-		if (pSlotId < 0 ||  pSlotId > pPlayer.containerMenu.slots.size()) return;
+		if (pSlotId < 0) return;
 		Slot slot = pPlayer.containerMenu.getSlot(pSlotId);
 		if (!slot.hasItem()) return;
 		if (slot.getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
 			pPlayer.playSound(SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1F,2F);
-			slot.remove(1);
+			slot.remove(slot.getItem().getCount());
 		}
 	}
 }
