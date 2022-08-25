@@ -1,6 +1,13 @@
 {
-  "parent": "item/generated",
+  "parent": "item/handheld",
   "textures": {
     "layer0": "theft:items/thief_glove"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [ 0, -90, -35 ],
+      "translation": [ 0, 1.25, 0 ],
+      "scale": [ 0.70, 0.70, 0.70 ]
+    }
   }
 }
