@@ -15,6 +15,9 @@
     },
     "firstperson_lefthand": {
       "scale": [0, 0, 0]
+    },
+    "head": {
+      "scale": [0, 0, 0]
     }
   }
 }
