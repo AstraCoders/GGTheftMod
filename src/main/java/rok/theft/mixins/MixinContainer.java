@@ -1,10 +1,13 @@
 package rok.theft.mixins;
 
+import net.minecraft.client.audio.Sound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,20 +20,13 @@ import rok.theft.init.Registry;
  */
 @Mixin(Container.class)
 public abstract class MixinContainer {
-	@Shadow public abstract Slot getSlot(int pSlotId);
-
-	@Inject(method = "quickMoveStack", at = @At("HEAD"))
-	public void quickMoveStack(PlayerEntity pPlayer, int pIndex, CallbackInfoReturnable<ItemStack> cir) {
-		System.out.println("Foi até aqui 1222222222222222222222222");
-	}
-
 	@Inject(method = "doClick", at = @At("HEAD"))
 	public void doClick(int pSlotId, int pDragType, ClickType pClickType, PlayerEntity pPlayer, CallbackInfoReturnable<ItemStack> cir) {
-		System.out.println("Foi até aqui 1");
-		Slot slot = getSlot(pSlotId);
-		System.out.println("Foi até aqui 2");
+		if (pSlotId < 0 ||  pSlotId > pPlayer.containerMenu.slots.size()) return;
+		Slot slot = pPlayer.containerMenu.getSlot(pSlotId);
+		if (!slot.hasItem()) return;
 		if (slot.getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
-			System.out.println("Foi até aqui 3");
+			pPlayer.playSound(SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1F,2F);
 			slot.remove(1);
 		}
 	}

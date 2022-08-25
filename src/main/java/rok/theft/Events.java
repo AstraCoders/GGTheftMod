@@ -16,6 +16,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import rok.theft.init.Registry;
 import rok.theft.packets.StartTheftPacket;
 import rok.theft.utils.CooldownUtils;
 import rok.theft.utils.TraceUtils;
