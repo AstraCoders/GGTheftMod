@@ -8,6 +8,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.text.event.HoverEvent;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -140,6 +142,14 @@ public class Events {
 	@SubscribeEvent
 	public void onDropItem(ItemTossEvent e) {
 		if (e.getEntityItem().getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
+			e.setCanceled(true);
+		}
+	}
+
+	@SubscribeEvent
+	public void onHoverEvent(RenderTooltipEvent e) {
+		if (Config.COMMON.SHOW_MISSING_HOVER.get()) return;
+		if (e.getStack().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
 			e.setCanceled(true);
 		}
 	}

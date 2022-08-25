@@ -43,13 +43,14 @@ public class MissingItem extends Item {
 		return false;
 	}
 
+
 	@Override
 	public void appendHoverText(ItemStack pStack, @Nullable World pLevel, List<ITextComponent> pTooltip, ITooltipFlag pFlag) {
 		String[] split = LanguageMap.getInstance().getOrDefault("item.theft.missing.lore").split("\n");
 		for (String s : split) {
 			pTooltip.add(new StringTextComponent(s));
 		}
-		//pTooltip.add(new StringTextComponent("§8Clique para remover"));
+
 		super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
 	}
 }
