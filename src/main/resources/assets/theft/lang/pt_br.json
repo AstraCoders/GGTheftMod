@@ -1,5 +1,6 @@
 
 {
   "item.theft.glove": "Luva do Ladrão",
-  "gui.theft.stealing": "Roubando"
+  "gui.theft.stealing": "Roubando",
+  "item.theft.missing": "Roubado"
 }

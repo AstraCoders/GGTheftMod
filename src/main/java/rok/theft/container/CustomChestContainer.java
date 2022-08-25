@@ -4,6 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
@@ -87,8 +88,20 @@ public class CustomChestContainer extends Container {
 				slot.setChanged();
 			}
 		}
+		if (!((CustomSlot) slot).isPlayerInventory()) {
+			slot.set(Registry.MISSING.get().getDefaultInstance());
+		}
 
 		return itemstack;
+	}
+
+	@Override
+	public ItemStack clicked(int pSlotId, int pDragType, ClickType pClickType, PlayerEntity pPlayer) {
+		CustomSlot slot = (CustomSlot) getSlot(pSlotId);
+		if (!slot.getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
+			slot.remove(1);
+		}
+		return super.clicked(pSlotId, pDragType, pClickType, pPlayer);
 	}
 
 	/**

@@ -7,6 +7,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import rok.theft.Theft;
 import rok.theft.container.CustomChestContainer;
+import rok.theft.items.MissingItem;
 import rok.theft.items.ThiefGloveItem;
 
 /*
@@ -19,5 +20,6 @@ public class Registry {
 
 	public static final RegistryObject<ContainerType<CustomChestContainer>> CUSTOM_CHEST = CONTAINER_REGISTRY.register("theft_container", () -> new ContainerType<>(CustomChestContainer::new));
 	public static final RegistryObject<Item> THIEF_GLOVE = ITEMS.register("glove", ThiefGloveItem::new);
+	public static final RegistryObject<Item> MISSING = ITEMS.register("missing", MissingItem::new);
 
 }

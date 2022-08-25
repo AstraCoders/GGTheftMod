@@ -36,13 +36,16 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 		super.render(pMatrixStack, pMouseX, pMouseY, pPartialTicks);
 		this.renderTooltip(pMatrixStack, pMouseX, pMouseY);
 
+		// COPYRIGHT
+		int i = (this.width - this.imageWidth) / 2;
+		int j = (this.height - this.imageHeight) / 2;
+		this.font.drawShadow(pMatrixStack, new StringTextComponent("Mod Oficial da série Minecraft Secreto"), i-8, j + 58, 11141120);
+
 		// Rendering cd
 		if (!Config.COMMON.STEAL_TIMER.get()) return;
 		if (ClientStuff.theftTime == -1) return;
-		int i = (this.width - this.imageWidth) / 2;
-		int j = (this.height - this.imageHeight) / 2;
 
-		int cdValue = ClientStuff.theftTime + 1 > Config.COMMON.STEAL_TIME.get() ? Config.COMMON.STEAL_TIME.get() : ClientStuff.theftTime +1 ;
+		int cdValue = ClientStuff.theftTime + 1 > Config.COMMON.STEAL_TIME.get() ? Config.COMMON.STEAL_TIME.get() : ClientStuff.theftTime +1;
 		// handle alignment
 		int leftMove = 0;
 		if (cdValue > 99) {

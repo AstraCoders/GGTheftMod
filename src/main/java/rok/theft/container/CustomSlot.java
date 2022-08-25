@@ -22,18 +22,23 @@ public class CustomSlot extends Slot {
 
 	@Override
 	public boolean mayPlace(ItemStack pStack) {
+		if (isPlayerInventory()) return true;
 		return pStack.getItem() instanceof ArmorItem || getSlotIndex() > 4;
 	}
 
 	@Override
 	public boolean mayPickup(PlayerEntity pPlayer) {
 		if (Config.COMMON.PICKUP_BOTH.get()) return true;
-		return !(container.getContainerSize() <= 41);
+		return !isPlayerInventory();
 	}
 
 	@Override
 	public boolean isActive() {
 		return active;
+	}
+
+	public boolean isPlayerInventory() {
+		return container.getContainerSize() <= 41;
 	}
 
 	public void setActive(boolean active) {

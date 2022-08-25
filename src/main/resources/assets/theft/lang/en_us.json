@@ -1,4 +1,5 @@
 {
   "item.theft.glove": "Thief Glove",
-  "gui.theft.stealing": "Stealing"
+  "gui.theft.stealing": "Stealing",
+  "item.theft.missing": "Stolen"
 }
