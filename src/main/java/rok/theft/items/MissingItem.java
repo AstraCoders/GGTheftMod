@@ -1,5 +1,6 @@
 package rok.theft.items;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -12,6 +13,9 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.LanguageMap;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
@@ -21,7 +25,9 @@ import rok.theft.Config;
 import rok.theft.server.TheftAction;
 import rok.theft.utils.TraceUtils;
 
+import javax.annotation.Nullable;
 import java.awt.event.ContainerEvent;
+import java.util.List;
 
 /*
  * @author Rok, Pedro Lucas N M Machado created on 24/08/2022
@@ -35,5 +41,15 @@ public class MissingItem extends Item {
 	public boolean onDroppedByPlayer(ItemStack item, PlayerEntity player) {
 		item.setCount(0);
 		return false;
+	}
+
+	@Override
+	public void appendHoverText(ItemStack pStack, @Nullable World pLevel, List<ITextComponent> pTooltip, ITooltipFlag pFlag) {
+		String[] split = LanguageMap.getInstance().getOrDefault("item.theft.missing.lore").split("\n");
+		for (String s : split) {
+			pTooltip.add(new StringTextComponent(s));
+		}
+		//pTooltip.add(new StringTextComponent("§8Clique para remover"));
+		super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
 	}
 }
