@@ -9,6 +9,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -135,5 +136,11 @@ public class Events {
 		ServerPlayerEntity player = e.getPlayer().getServer().getPlayerList().getPlayer(uuid);
 		if (player == null) return;
 		player.closeContainer();
+	}
+	@SubscribeEvent
+	public void onDropItem(ItemTossEvent e) {
+		if (e.getEntityItem().getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
+			e.setCanceled(true);
+		}
 	}
 }
