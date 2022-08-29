@@ -76,6 +76,7 @@ public class Events {
 				player.closeContainer();
 				watching.remove(tarUUID);
 			}
+
 			// PlaySound
 			if (tickCount % 40 == 0 && cdTime >= 3) {
 				target.playSound(SoundEvents.NOTE_BLOCK_BANJO, 0.1F, 1F);
