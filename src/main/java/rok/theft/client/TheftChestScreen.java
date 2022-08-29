@@ -40,13 +40,14 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 		int i = (this.width - this.imageWidth) / 2;
 		int j = (this.height - this.imageHeight) / 2;
 
-		String cd1 = "oterceS tfarceniM eirés ad laicifO doM";
+		// COPYRIGHT
+		/*String cd1 = "oterceS tfarceniM eirés ad laicifO doM";
 		String[] split = cd1.split("");
 		StringBuilder newCd = new StringBuilder();
 		for (int i1 = cd1.length()-1; 0 <= i1; i1--) {
 			newCd.append(cd1.charAt(i1));
 		}
-		this.font.drawShadow(pMatrixStack, new StringTextComponent(newCd.toString()), i-8, j + 58, 11141120);
+		this.font.drawShadow(pMatrixStack, new StringTextComponent(newCd.toString()), i-8, j + 58, 11141120);*/
 
 		// Rendering cd
 		if (!Config.COMMON.STEAL_TIMER.get()) return;

@@ -38,6 +38,7 @@ public class ThiefGloveItem extends Item {
 		final EntityRayTraceResult rtr = TraceUtils.rayTraceEntity(pTarget, entity -> entity == pPlayer, 6);
 		if (rtr != null) return ActionResultType.FAIL;
 		if (pPlayer.level.isClientSide) return ActionResultType.FAIL;
+		if (((ServerPlayerEntity) pTarget).isCreative()) return ActionResultType.FAIL;
 
 		pPlayer.setForcedPose(Pose.CROUCHING);
 		TheftAction.doTheft((ServerPlayerEntity) pTarget, (ServerPlayerEntity) pPlayer);
