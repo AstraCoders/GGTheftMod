@@ -23,10 +23,10 @@ public abstract class MixinContainer {
 		Slot slot;
 		try {
 			slot = pPlayer.containerMenu.getSlot(pSlotId);
-		} catch (ArrayIndexOutOfBoundsException e) {
+		} catch (IndexOutOfBoundsException e) {
 			return;
 		}
-		if(slot == null) return;
+		if (slot == null) return;
 		if (!slot.hasItem()) return;
 		if (slot.getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
 			pPlayer.playSound(SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1F, 2F);
