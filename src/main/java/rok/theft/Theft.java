@@ -41,6 +41,10 @@ public class Theft {
 
 		Registry.ITEMS.register(bus);
 		Registry.CONTAINER_REGISTRY.register(bus);
+
+		Registry.init();
+		Registry.ENCHANTMENT_REGISTRY.register(bus);
+
 		bus.addListener(this::onClientRegister);
 		addNetworkMessage(StartTheftPacket.class, StartTheftPacket::buffer, StartTheftPacket::new, StartTheftPacket::handle);
 	}

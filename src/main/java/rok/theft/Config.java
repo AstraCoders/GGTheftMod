@@ -17,6 +17,7 @@ public class Config {
 		public final ForgeConfigSpec.BooleanValue PICKUP_BOTH;
 		public final ForgeConfigSpec.BooleanValue SHOW_MISSING;
 		public final ForgeConfigSpec.BooleanValue SHOW_MISSING_HOVER;
+		public final ForgeConfigSpec.BooleanValue POCKET_CHAIN_ENCHANT;
 
 		Common(ForgeConfigSpec.Builder builder) {
 			builder.comment("Common config").push("common");
@@ -28,6 +29,7 @@ public class Config {
 			PICKUP_BOTH = builder.comment("Should the player be able to pickup and place item on target's inventory? (Default: just pickup)").define("pickup_both", false);
 			SHOW_MISSING = builder.comment("The player must know which slot was stolen?").define("show_missing", true);
 			SHOW_MISSING_HOVER = builder.comment("Should Stolen Item has hover info?").define("show_missing_hover", false);
+			POCKET_CHAIN_ENCHANT = builder.comment("Can player steal items with \"Pocket Chain\" enchantment?").define("pocket_chain_enchant", false);
 			builder.pop();
 		}
 	}

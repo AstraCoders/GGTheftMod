@@ -1,5 +1,7 @@
 package rok.theft.container;
 
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -17,6 +19,7 @@ import rok.theft.Config;
 import rok.theft.init.Registry;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /*
@@ -110,12 +113,15 @@ public class CustomChestContainer extends Container {
 	public ItemStack clicked(int pSlotId, int pDragType, ClickType pClickType, PlayerEntity pPlayer) {
 		if (pSlotId < 0) return super.clicked(pSlotId, pDragType, pClickType, pPlayer);
 		Slot slot = getSlot(pSlotId);
-		if (slot.getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
+		if (isMissingItem(slot)) {
 			pPlayer.playSound(SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1F,2F);
 			slot.remove(slot.getItem().getCount());
 			return ItemStack.EMPTY;
 		} else
-		if (slot.getItem().sameItemStackIgnoreDurability(Registry.THIEF_GLOVE.get().getDefaultInstance())) {
+		if (isGlooveItem(slot)) {
+			return ItemStack.EMPTY;
+		} else
+		if (hasPocketChainEnchant(slot)) {
 			return ItemStack.EMPTY;
 		}
 
@@ -140,5 +146,18 @@ public class CustomChestContainer extends Container {
 	@OnlyIn(Dist.CLIENT)
 	public int getRowCount() {
 		return this.containerRows;
+	}
+
+	private boolean isGlooveItem(Slot slot) {
+		return slot.getItem().sameItemStackIgnoreDurability(Registry.THIEF_GLOVE.get().getDefaultInstance());
+	}
+	private boolean isMissingItem(Slot slot) {
+		return slot.getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance());
+	}
+	private boolean hasPocketChainEnchant(Slot slot) {
+		if (!slot.getItem().isEnchanted()) return false;
+		if (Config.COMMON.POCKET_CHAIN_ENCHANT.get()) return false;
+		Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(slot.getItem());
+		return enchantments.containsKey(Registry.POCKET_CHAIN.get());
 	}
 }

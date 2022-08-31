@@ -4,5 +4,6 @@
   "item.theft.glove.lore": "§7Clique com botão direito nas costas\n§7De um jogador enquanto agacha\n§7Para rouba-lo!",
   "gui.theft.stealing": "Roubando",
   "item.theft.missing": "Item Roubado",
-  "item.theft.missing.lore": "§7Este item foi roubado!\n§8Clique para remover."
+  "item.theft.missing.lore": "§7Este item foi roubado!\n§8Clique para remover.",
+  "enchantment.theft.pocket_chain": "Corrente de Bolso"
 }

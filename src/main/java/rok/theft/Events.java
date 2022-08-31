@@ -11,6 +11,8 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.enchanting.EnchantmentLevelSetEvent;
+import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
@@ -151,7 +153,6 @@ public class Events {
 			e.setCanceled(true);
 		}
 	}
-
 	@SubscribeEvent
 	public void onHoverEvent(RenderTooltipEvent e) {
 		if (Config.COMMON.SHOW_MISSING_HOVER.get()) return;
