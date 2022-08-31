@@ -3,12 +3,10 @@ package rok.theft.container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import rok.theft.Config;
-import rok.theft.Theft;
 
 /*
  * @author Lucasmellof, Lucas de Mello Freitas created on 12/08/2022
@@ -23,7 +21,22 @@ public class CustomSlot extends Slot {
 	@Override
 	public boolean mayPlace(ItemStack pStack) {
 		if (isPlayerInventory()) return true;
-		return pStack.getItem() instanceof ArmorItem || getSlotIndex() > 4;
+		if (getSlotIndex() > 4) return true;
+		if (!(pStack.getItem() instanceof ArmorItem)) return false;
+		EquipmentSlotType eqp = ((ArmorItem) pStack.getItem()).getSlot();
+		switch (getSlotIndex()) {
+			case 0:
+				return eqp.equals(EquipmentSlotType.HEAD);
+			case 1:
+				return eqp.equals(EquipmentSlotType.CHEST);
+			case 2:
+				return eqp.equals(EquipmentSlotType.LEGS);
+			case 3:
+				return eqp.equals(EquipmentSlotType.FEET);
+			default:
+				System.out.println("2");
+				return false;
+		}
 	}
 
 	@Override
