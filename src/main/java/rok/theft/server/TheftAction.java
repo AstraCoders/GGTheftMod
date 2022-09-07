@@ -37,7 +37,7 @@ public class TheftAction {
 			public ITextComponent getDisplayName() {
 				if (Config.COMMON.STEAL_TITLE.get())
 					return new StringTextComponent(LanguageMap.getInstance().getOrDefault("gui.theft.stealing") + " " + target.getDisplayName().getString());
-				return new StringTextComponent(" ");
+				return new StringTextComponent(LanguageMap.getInstance().getOrDefault("gui.theft.stealing"));
 			}
 
 			@Override
