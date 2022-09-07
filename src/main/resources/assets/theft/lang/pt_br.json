@@ -6,6 +6,7 @@
   "item.theft.missing": "Item Roubado",
   "item.theft.missing.lore": "§7Roubado há ${time} \n§8Clique para remover.",
   "enchantment.theft.pocket_chain": "Corrente de Bolso",
+  "cooldown.theft.left": "§cEspere ${time} para roubar novamente!",
   "timeframe.theft.second": "segundo",
   "timeframe.theft.minute": "minuto",
   "timeframe.theft.hour": "hora",

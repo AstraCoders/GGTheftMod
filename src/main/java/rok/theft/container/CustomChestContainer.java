@@ -18,6 +18,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import rok.theft.Config;
 import rok.theft.init.Registry;
+import rok.theft.utils.CooldownUtils;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -148,6 +149,11 @@ public class CustomChestContainer extends Container {
 	 * Called when the container is closed.
 	 */
 	public void removed(PlayerEntity pPlayer) {
+
+		// TODO: time in cooldown
+		if (Config.COMMON.COOLDOWN_TO_STEAL.get() != -1) {
+			CooldownUtils.setCooldown(pPlayer, Config.COMMON.COOLDOWN_TO_STEAL.get(), "stealCD");
+		}
 		if (Config.COMMON.SHOW_MISSING.get()) {
 			// creating missing item
 			ItemStack missing = Registry.MISSING.get().getDefaultInstance();
