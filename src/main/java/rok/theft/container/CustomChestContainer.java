@@ -48,8 +48,7 @@ public class CustomChestContainer extends Container {
 		this.containerRows = pRows;
 
 		// TODO: verificar CD de dia do mine
-		// TODO: verificar se tem limite de itens para roubar
-		canStoleQnt =  4; // Config.COMMON.
+		canStoleQnt = Config.COMMON.LIMIT_ITEM_NUMBER.get();
 
 
 		pContainer.startOpen(pPlayerInventory.player);
@@ -122,22 +121,23 @@ public class CustomChestContainer extends Container {
 		if (pSlotId < 0) return super.clicked(pSlotId, pDragType, pClickType, pPlayer);
 		CustomSlot slot = (CustomSlot) getSlot(pSlotId);
 		if (isMissingItem(slot)) {
-			pPlayer.playSound(SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1F,2F);
+			pPlayer.playSound(SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1F, 2F);
 			slot.remove(slot.getItem().getCount());
 			return ItemStack.EMPTY;
-		} else
-		if (isGlooveItem(slot)) {
+		} else if (isGlooveItem(slot)) {
 			return ItemStack.EMPTY;
-		} else
-		if (hasPocketChainEnchant(slot)) {
+		} else if (hasPocketChainEnchant(slot)) {
 			return ItemStack.EMPTY;
 		}
-		if (slot.hasItem() && !slot.isPlayerInventory()) {
-			if (canStoleQnt <= 0) {
-				pPlayer.closeContainer();
-				return ItemStack.EMPTY;
+
+		if (Config.COMMON.LIMIT_STEAL_ITEM.get()) {
+			if (slot.hasItem() && !slot.isPlayerInventory()) {
+				if (canStoleQnt <= 0) {
+					pPlayer.closeContainer();
+					return ItemStack.EMPTY;
+				}
+				canStoleQnt--;
 			}
-			canStoleQnt--;
 		}
 
 		return super.clicked(pSlotId, pDragType, pClickType, pPlayer);
@@ -172,9 +172,11 @@ public class CustomChestContainer extends Container {
 	private boolean isGlooveItem(Slot slot) {
 		return slot.getItem().sameItemStackIgnoreDurability(Registry.THIEF_GLOVE.get().getDefaultInstance());
 	}
+
 	private boolean isMissingItem(Slot slot) {
 		return slot.getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance());
 	}
+
 	private boolean hasPocketChainEnchant(Slot slot) {
 		if (!slot.getItem().isEnchanted()) return false;
 		if (Config.COMMON.POCKET_CHAIN_ENCHANT.get()) return false;

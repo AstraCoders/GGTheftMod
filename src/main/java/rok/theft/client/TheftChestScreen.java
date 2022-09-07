@@ -18,36 +18,32 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 
 	private final int containerRows;
 	private final CustomChestContainer container;
-	private final int info;
+	private final boolean infoItem;
+	private final boolean infoTime;
 
 	public TheftChestScreen(CustomChestContainer pChestMenu, PlayerInventory pPlayerInventory, ITextComponent pTitle) {
 		super(pChestMenu, pPlayerInventory, pTitle);
 		this.passEvents = false;
 		this.container = pChestMenu;
 		this.containerRows = pChestMenu.getRowCount();
-		this.info = getInfoToShow();
+		this.infoItem = Config.COMMON.LIMIT_STEAL_ITEM.get();
+		this.infoTime = Config.COMMON.STEAL_TIMER.get();
 		this.imageHeight = 114 + this.containerRows * 18;
 		this.inventoryLabelY = this.imageHeight - 94;
-	}
-
-	private int getInfoToShow() {
-		boolean item = true; // TODO: import from config
-		boolean cd = true;//Config.COMMON.STEAL_TIMER.get();
-		if (item && cd) return 0;
-		if (item) return -78;
-		return 78;
 	}
 
 	/**
 	 * The ResourceLocation containing the chest GUI texture.
 	 */
 	private static final ResourceLocation CONTAINER_BACKGROUND = new ResourceLocation(Theft.MOD_ID, "textures/gui/container/theft_inventory.png");
-	private static final ResourceLocation CONTAINER_INFO = new ResourceLocation(Theft.MOD_ID, "textures/gui/container/inv_info.png");
+	private static final ResourceLocation CONTAINER_INFO_ITEM = new ResourceLocation(Theft.MOD_ID, "textures/gui/container/inv_info_item.png");
+	private static final ResourceLocation CONTAINER_INFO_TIME = new ResourceLocation(Theft.MOD_ID, "textures/gui/container/inv_info_time.png");
 
 	public void render(MatrixStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTicks) {
 		this.renderBackground(pMatrixStack);
 		super.render(pMatrixStack, pMouseX, pMouseY, pPartialTicks);
-		this.renderInfo(pMatrixStack);
+		if (infoTime) this.renderInfo(pMatrixStack, CONTAINER_INFO_TIME);
+		if (infoItem) this.renderInfo(pMatrixStack, CONTAINER_INFO_ITEM);
 		this.renderTooltip(pMatrixStack, pMouseX, pMouseY);
 
 
@@ -65,7 +61,7 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 
 
 		// Item Limit
-		this.font.draw(pMatrixStack,  new StringTextComponent(String.format("%d", container.canStoleQnt)), i + 17 , j - 5, getColorByNumber(container.canStoleQnt));
+		if (Config.COMMON.LIMIT_STEAL_ITEM.get()) this.font.draw(pMatrixStack,  new StringTextComponent(String.format("%d", container.canStoleQnt)), i + 17 , j - 5, getColorByNumber(container.canStoleQnt));
 
 		// Rendering cd
 		if (!Config.COMMON.STEAL_TIMER.get()) return;
@@ -79,8 +75,6 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 		} else if (cdValue > 9) {
 			leftMove -= 6;
 		}
-
-		// handle color
 
 		ITextComponent cd = new StringTextComponent(String.format("%d", cdValue));
 		this.font.draw(pMatrixStack, cd, i + 154 + leftMove, j - 5, getColorByNumber(cdValue));
@@ -103,12 +97,12 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 		this.blit(pMatrixStack, i, j, 0,0, this.imageWidth, this.containerRows * 18 + 17);
 		this.blit(pMatrixStack, i, j + this.containerRows * 18 + 17, 0, 126, this.imageWidth, 96);
 	}
-	protected void renderInfo(MatrixStack pMatrixStack) {
+	protected void renderInfo(MatrixStack pMatrixStack, ResourceLocation FRAME) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.minecraft.getTextureManager().bind(CONTAINER_INFO);
+		this.minecraft.getTextureManager().bind(FRAME);
 		int i = (this.width - this.imageWidth) / 2;
 		int j = (this.height - 16) / 2;
-		this.blit(pMatrixStack, i, j-this.containerRows * 18 -14, 0,0 + info, this.imageWidth, 16);
+		this.blit(pMatrixStack, i, j-this.containerRows * 18 -14, 0, 0, this.imageWidth, 16);
 	}
 
 }
