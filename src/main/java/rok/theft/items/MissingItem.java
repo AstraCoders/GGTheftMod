@@ -11,6 +11,7 @@ import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
@@ -23,10 +24,12 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import rok.theft.Config;
 import rok.theft.server.TheftAction;
+import rok.theft.utils.TimeFrame;
 import rok.theft.utils.TraceUtils;
 
 import javax.annotation.Nullable;
 import java.awt.event.ContainerEvent;
+import java.sql.Time;
 import java.util.List;
 
 /*
@@ -51,7 +54,17 @@ public class MissingItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack pStack, @Nullable World pLevel, List<ITextComponent> pTooltip, ITooltipFlag pFlag) {
-		String[] split = LanguageMap.getInstance().getOrDefault("item.theft.missing.lore").split("\n");
+		String lore = LanguageMap.getInstance().getOrDefault("item.theft.missing.lore");
+
+		CompoundNBT stolenTime = pStack.getTag();
+		if (stolenTime == null) return;
+
+		long time = System.currentTimeMillis() - stolenTime.getLong("stolenTime");
+		TimeFrame timeFrame = new TimeFrame(time);
+		timeFrame.getFormatedDiscursive();
+		lore = lore.replace("${time}", timeFrame.getFormatedDiscursive());
+
+		String[] split = lore.split("\n");
 		for (String s : split) {
 			pTooltip.add(new StringTextComponent(s));
 		}

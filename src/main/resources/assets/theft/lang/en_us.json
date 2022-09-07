@@ -3,6 +3,11 @@
   "item.theft.glove.lore": "§7Right click on a player's back\n§7While crouching\n§7To steal it!",
   "gui.theft.stealing": "Stealing",
   "item.theft.missing": "Stolen Item",
-  "item.theft.missing.lore": "§7This item has been stolen!\n§8Click to remove.",
-  "enchantment.theft.pocket_chain": "Pocket Chain"
+  "item.theft.missing.lore": "§7Stolen at ${time} ago\n§8Click to remove.",
+  "enchantment.theft.pocket_chain": "Pocket Chain",
+  "timeframe.theft.second": "second",
+  "timeframe.theft.minute": "minute",
+  "timeframe.theft.hour": "hour",
+  "timeframe.theft.day": "day",
+  "timeframe.theft.and": "and"
 }

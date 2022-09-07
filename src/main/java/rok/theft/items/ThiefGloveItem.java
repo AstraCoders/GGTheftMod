@@ -9,6 +9,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 public class ThiefGloveItem extends Item {
 	public ThiefGloveItem() {
-		super(new Properties().tab(ItemGroup.TAB_COMBAT).stacksTo(1).durability(Config.COMMON.ITEM_DURABILITY.get()));
+		super(new Properties().tab(ItemGroup.TAB_COMBAT).stacksTo(1).durability(Config.COMMON.ITEM_DURABILITY.get()).setNoRepair());
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class ThiefGloveItem extends Item {
 		TheftAction.doTheft((ServerPlayerEntity) pTarget, (ServerPlayerEntity) pPlayer);
 
 		// Adding SFX
-		pPlayer.level.playSound(null, pPlayer, SoundEvents.LEASH_KNOT_BREAK, SoundCategory.PLAYERS, 0.2F, 1F);
+		pPlayer.playSound(SoundEvents.LEASH_KNOT_BREAK,0.2F, 1F);
 		return ActionResultType.SUCCESS;
 	}
 
@@ -53,6 +54,7 @@ public class ThiefGloveItem extends Item {
 		if (pWorld.isClientSide) return ActionResult.pass(pPlayer.getItemInHand(pHand));
 		return super.use(pWorld, pPlayer, pHand);
 	}
+
 
 	@Override
 	public void appendHoverText(ItemStack pStack, @Nullable World pLevel, List<ITextComponent> pTooltip, ITooltipFlag pFlag) {

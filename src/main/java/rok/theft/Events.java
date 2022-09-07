@@ -122,7 +122,7 @@ public class Events {
 		}
 
 		// Play soundEffect
-		e.getPlayer().level.playSound(null, e.getPlayer(), SoundEvents.LEASH_KNOT_BREAK, SoundCategory.PLAYERS, 0.5F, 1F);
+		e.getPlayer().playSound(SoundEvents.LEASH_KNOT_BREAK,0.5F, 1F);
 
 		e.getPlayer().setForcedPose(null);
 	}

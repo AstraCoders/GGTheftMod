@@ -30,7 +30,7 @@ public class Config {
 			STEAL_TITLE = builder.comment("Stealing inventory should have a title? (Example: \"Stealing Steve\")").define("steal_title_enabled", true);
 			PICKUP_BOTH = builder.comment("Should the player be able to pickup and place item on target's inventory? (Default: just pickup)").define("pickup_both", false);
 			SHOW_MISSING = builder.comment("The player must know which slot was stolen?").define("show_missing", true);
-			SHOW_MISSING_HOVER = builder.comment("Should Stolen Item has hover info?").define("show_missing_hover", false);
+			SHOW_MISSING_HOVER = builder.comment("Should Stolen Item has hover info?").define("show_missing_hover", true);
 			POCKET_CHAIN_ENCHANT = builder.comment("Can player steal items with \"Pocket Chain\" enchantment?").define("pocket_chain_enchant", false);
 			LIMIT_STEAL_ITEM = builder.comment("Limit how much a player can stole").define("limit_steal_item", true);
 			LIMIT_ITEM_NUMBER = builder.comment("Quantity of item that can be  stolen.").defineInRange("limit_item_number",3, 0,999);

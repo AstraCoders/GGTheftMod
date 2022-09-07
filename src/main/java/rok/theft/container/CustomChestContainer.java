@@ -12,6 +12,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.LongNBT;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -150,9 +151,8 @@ public class CustomChestContainer extends Container {
 		if (Config.COMMON.SHOW_MISSING.get()) {
 			// creating missing item
 			ItemStack missing = Registry.MISSING.get().getDefaultInstance();
-			CompoundNBT compoundNBT = new CompoundNBT();
-			compoundNBT.putLong("stolenTime", System.currentTimeMillis());
-			missing.setTag(compoundNBT);
+
+			missing.addTagElement("stolenTime", LongNBT.valueOf(System.currentTimeMillis()));
 
 			for (Integer initialSlot : initialSlots) {
 				if (!getSlot(initialSlot).hasItem()) {
