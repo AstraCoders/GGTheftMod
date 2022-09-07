@@ -10,6 +10,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.network.play.server.STitlePacket;
 import net.minecraft.util.*;
@@ -46,22 +47,20 @@ public class ThiefGloveItem extends Item {
 		if (pPlayer.level.isClientSide) return ActionResultType.FAIL;
 		if (((ServerPlayerEntity) pTarget).isCreative()) return ActionResultType.FAIL;
 
-
-		//TODO: COOLDOWN
-		if (CooldownUtils.isInCooldown(pPlayer, "stealCD")) {
+		// COOLDOWN
+		if (pPlayer.getCooldowns().isOnCooldown(pStack.getItem())) {
 			String msg = LanguageMap.getInstance().getOrDefault("cooldown.theft.left");
-			msg = msg.replace("${time}", new TimeFrame(CooldownUtils.getCooldownTime(pPlayer, "stealCD")+1000).getFormatedDiscursive());
 			STitlePacket titlePacket = new STitlePacket(STitlePacket.Type.ACTIONBAR, new StringTextComponent(msg), 15, 50, 15);
 			((ServerPlayerEntity) pPlayer).connection.send(titlePacket);
-			pPlayer.playSound(SoundEvents.NOTE_BLOCK_DIDGERIDOO, 0.5F, 1F);
+			pPlayer.playSound(SoundEvents.NOTE_BLOCK_DIDGERIDOO, 0.3F, 1F);
 			return ActionResultType.FAIL;
 		}
 
 		pPlayer.setForcedPose(Pose.CROUCHING);
-		TheftAction.doTheft((ServerPlayerEntity) pTarget, (ServerPlayerEntity) pPlayer);
+		TheftAction.doTheft((ServerPlayerEntity) pTarget, (ServerPlayerEntity) pPlayer, pStack);
 
 		// Adding SFX
-		pPlayer.playSound(SoundEvents.LEASH_KNOT_BREAK,0.2F, 1F);
+		pPlayer.playSound(SoundEvents.LEASH_KNOT_BREAK, 0.2F, 1F);
 		return ActionResultType.SUCCESS;
 	}
 
@@ -70,7 +69,6 @@ public class ThiefGloveItem extends Item {
 		if (pWorld.isClientSide) return ActionResult.pass(pPlayer.getItemInHand(pHand));
 		return super.use(pWorld, pPlayer, pHand);
 	}
-
 
 	@Override
 	public void appendHoverText(ItemStack pStack, @Nullable World pLevel, List<ITextComponent> pTooltip, ITooltipFlag pFlag) {

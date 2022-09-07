@@ -2,6 +2,7 @@ package rok.theft;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.SoundCategory;
@@ -18,6 +19,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -158,6 +160,16 @@ public class Events {
 		if (Config.COMMON.SHOW_MISSING_HOVER.get()) return;
 		if (e.getStack().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
 			e.setCanceled(true);
+		}
+	}
+
+	@SubscribeEvent
+	public void onDayPassEvent(SleepFinishedTimeEvent e) {
+		if (!Config.COMMON.COOLDOWN_RESET_SLEEP.get()) return;
+
+		long timePass = e.getNewTime()-e.getWorld().dayTime();
+		for (PlayerEntity player : e.getWorld().players()) {
+			player.getCooldowns().removeCooldown(Registry.THIEF_GLOVE.get());
 		}
 	}
 }

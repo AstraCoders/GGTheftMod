@@ -5,7 +5,7 @@
   "item.theft.missing": "Stolen Item",
   "item.theft.missing.lore": "§7Stolen at ${time} ago\n§8Click to remove.",
   "enchantment.theft.pocket_chain": "Pocket Chain",
-  "cooldown.theft.left": "§cWait ${time} to steal again!",
+  "cooldown.theft.left": "§cWait to steal again!",
   "timeframe.theft.second": "second",
   "timeframe.theft.minute": "minute",
   "timeframe.theft.hour": "hour",

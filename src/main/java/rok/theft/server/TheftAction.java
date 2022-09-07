@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.LanguageMap;
@@ -23,7 +24,7 @@ import rok.theft.utils.CooldownUtils;
  */
 public class TheftAction {
 
-	public static void doTheft(ServerPlayerEntity target, ServerPlayerEntity player) {
+	public static void doTheft(ServerPlayerEntity target, ServerPlayerEntity player, ItemStack itemStack) {
 		Events.addToWatchingMap(target, player);
 		int packetTime = -1;
 		if (Config.COMMON.STEAL_TIMER.get()) {
@@ -41,7 +42,7 @@ public class TheftAction {
 
 			@Override
 			public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player) {
-				return new CustomChestContainer(id, inventory, new TargetPlayerInventory(target));
+				return new CustomChestContainer(id, inventory, new TargetPlayerInventory(target), itemStack);
 			}
 		});
 

@@ -31,23 +31,25 @@ public class CustomChestContainer extends Container {
 	private final IInventory container;
 	private final Set<Integer> initialSlots = new HashSet<>();
 	private final int containerRows;
-
 	public int canStoleQnt;
 
+	private final ItemStack glove;
+
 	public CustomChestContainer(int pContainerId, PlayerInventory pPlayerInventory) {
-		this(pContainerId, pPlayerInventory, new Inventory(5 * 9));
+		this(pContainerId, pPlayerInventory, new Inventory(5 * 9), null);
 	}
 
 
-	public CustomChestContainer(int pContainerId, PlayerInventory pPlayerInventory, IInventory pContainer) {
-		this(Registry.CUSTOM_CHEST.get(), pContainerId, pPlayerInventory, pContainer, 5);
+	public CustomChestContainer(int pContainerId, PlayerInventory pPlayerInventory, IInventory pContainer, ItemStack glove) {
+		this(Registry.CUSTOM_CHEST.get(), pContainerId, pPlayerInventory, pContainer, 5, glove);
 	}
 
-	public CustomChestContainer(ContainerType<?> pType, int pContainerId, PlayerInventory pPlayerInventory, IInventory pContainer, int pRows) {
+	public CustomChestContainer(ContainerType<?> pType, int pContainerId, PlayerInventory pPlayerInventory, IInventory pContainer, int pRows, ItemStack glove) {
 		super(pType, pContainerId);
 		checkContainerSize(pContainer, pRows * 9);
 		this.container = pContainer;
 		this.containerRows = pRows;
+		this.glove = glove;
 
 		// TODO: verificar CD de dia do mine
 		canStoleQnt = Config.COMMON.LIMIT_ITEM_NUMBER.get();
@@ -150,12 +152,13 @@ public class CustomChestContainer extends Container {
 	 */
 	public void removed(PlayerEntity pPlayer) {
 
-		// TODO: time in cooldown
-		if (Config.COMMON.COOLDOWN_TO_STEAL.get() != -1) {
-			CooldownUtils.setCooldown(pPlayer, Config.COMMON.COOLDOWN_TO_STEAL.get(), "stealCD");
+		// time in cooldown
+		if (Config.COMMON.COOLDOWN_TO_STEAL.get() != 0 && glove != null) {
+			pPlayer.getCooldowns().addCooldown(glove.getItem(), Config.COMMON.COOLDOWN_TO_STEAL.get() * 20);
 		}
+
+		// creating missing item
 		if (Config.COMMON.SHOW_MISSING.get()) {
-			// creating missing item
 			ItemStack missing = Registry.MISSING.get().getDefaultInstance();
 
 			missing.addTagElement("stolenTime", LongNBT.valueOf(System.currentTimeMillis()));
