@@ -43,6 +43,11 @@ public class MissingItem extends Item {
 		return false;
 	}
 
+	// TODO: se for para fazer o tempo roubado no nome, ou na lore
+	@Override
+	public ITextComponent getName(ItemStack pStack) {
+		return super.getName(pStack);
+	}
 
 	@Override
 	public void appendHoverText(ItemStack pStack, @Nullable World pLevel, List<ITextComponent> pTooltip, ITooltipFlag pFlag) {

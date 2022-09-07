@@ -17,23 +17,37 @@ import rok.theft.container.CustomChestContainer;
 public class TheftChestScreen extends ContainerScreen<CustomChestContainer> implements IHasContainer<CustomChestContainer> {
 
 	private final int containerRows;
+	private final CustomChestContainer container;
+	private final int info;
 
 	public TheftChestScreen(CustomChestContainer pChestMenu, PlayerInventory pPlayerInventory, ITextComponent pTitle) {
 		super(pChestMenu, pPlayerInventory, pTitle);
 		this.passEvents = false;
+		this.container = pChestMenu;
 		this.containerRows = pChestMenu.getRowCount();
+		this.info = getInfoToShow();
 		this.imageHeight = 114 + this.containerRows * 18;
 		this.inventoryLabelY = this.imageHeight - 94;
+	}
+
+	private int getInfoToShow() {
+		boolean item = true; // TODO: import from config
+		boolean cd = true;//Config.COMMON.STEAL_TIMER.get();
+		if (item && cd) return 0;
+		if (item) return -78;
+		return 78;
 	}
 
 	/**
 	 * The ResourceLocation containing the chest GUI texture.
 	 */
 	private static final ResourceLocation CONTAINER_BACKGROUND = new ResourceLocation(Theft.MOD_ID, "textures/gui/container/theft_inventory.png");
+	private static final ResourceLocation CONTAINER_INFO = new ResourceLocation(Theft.MOD_ID, "textures/gui/container/inv_info.png");
 
 	public void render(MatrixStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTicks) {
 		this.renderBackground(pMatrixStack);
 		super.render(pMatrixStack, pMouseX, pMouseY, pPartialTicks);
+		this.renderInfo(pMatrixStack);
 		this.renderTooltip(pMatrixStack, pMouseX, pMouseY);
 
 
@@ -49,6 +63,10 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 		}
 		this.font.drawShadow(pMatrixStack, new StringTextComponent(newCd.toString()), i-8, j + 58, 11141120);
 
+
+		// Item Limit
+		this.font.draw(pMatrixStack,  new StringTextComponent(String.format("%d", container.canStoleQnt)), i + 17 , j - 5, getColorByNumber(container.canStoleQnt));
+
 		// Rendering cd
 		if (!Config.COMMON.STEAL_TIMER.get()) return;
 		if (ClientStuff.theftTime == -1) return;
@@ -63,24 +81,34 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 		}
 
 		// handle color
-		int color = -12829636;
-		if (cdValue < 2) {
-			color = 11141120;
-		} else if (cdValue < 4) {
-			color = 16733525;
-		}
 
 		ITextComponent cd = new StringTextComponent(String.format("%d", cdValue));
-		this.font.draw(pMatrixStack, cd, i + 163 + leftMove, j + 6, color);
+		this.font.draw(pMatrixStack, cd, i + 154 + leftMove, j - 5, getColorByNumber(cdValue));
 	}
 
+	private int getColorByNumber(int value) {
+		int color = -12829636;
+		if (value < 2) {
+			color = 11141120;
+		} else if (value < 4) {
+			color = 16733525;
+		}
+		return color;
+	}
 	protected void renderBg(MatrixStack pMatrixStack, float pPartialTicks, int pX, int pY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.minecraft.getTextureManager().bind(CONTAINER_BACKGROUND);
 		int i = (this.width - this.imageWidth) / 2;
 		int j = (this.height - this.imageHeight) / 2;
-		this.blit(pMatrixStack, i, j, 0, 0, this.imageWidth, this.containerRows * 18 + 17);
+		this.blit(pMatrixStack, i, j, 0,0, this.imageWidth, this.containerRows * 18 + 17);
 		this.blit(pMatrixStack, i, j + this.containerRows * 18 + 17, 0, 126, this.imageWidth, 96);
+	}
+	protected void renderInfo(MatrixStack pMatrixStack) {
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		this.minecraft.getTextureManager().bind(CONTAINER_INFO);
+		int i = (this.width - this.imageWidth) / 2;
+		int j = (this.height - 16) / 2;
+		this.blit(pMatrixStack, i, j-this.containerRows * 18 -14, 0,0 + info, this.imageWidth, 16);
 	}
 
 }

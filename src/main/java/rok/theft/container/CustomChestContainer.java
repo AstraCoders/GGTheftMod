@@ -11,8 +11,8 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import rok.theft.Config;
@@ -30,6 +30,8 @@ public class CustomChestContainer extends Container {
 	private final Set<Integer> initialSlots = new HashSet<>();
 	private final int containerRows;
 
+	public int canStoleQnt;
+
 	public CustomChestContainer(int pContainerId, PlayerInventory pPlayerInventory) {
 		this(pContainerId, pPlayerInventory, new Inventory(5 * 9));
 	}
@@ -44,6 +46,12 @@ public class CustomChestContainer extends Container {
 		checkContainerSize(pContainer, pRows * 9);
 		this.container = pContainer;
 		this.containerRows = pRows;
+
+		// TODO: verificar CD de dia do mine
+		// TODO: verificar se tem limite de itens para roubar
+		canStoleQnt =  4; // Config.COMMON.
+
+
 		pContainer.startOpen(pPlayerInventory.player);
 		int i = (this.containerRows - 4) * 18;
 
@@ -112,7 +120,7 @@ public class CustomChestContainer extends Container {
 	@Override
 	public ItemStack clicked(int pSlotId, int pDragType, ClickType pClickType, PlayerEntity pPlayer) {
 		if (pSlotId < 0) return super.clicked(pSlotId, pDragType, pClickType, pPlayer);
-		Slot slot = getSlot(pSlotId);
+		CustomSlot slot = (CustomSlot) getSlot(pSlotId);
 		if (isMissingItem(slot)) {
 			pPlayer.playSound(SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1F,2F);
 			slot.remove(slot.getItem().getCount());
@@ -124,6 +132,13 @@ public class CustomChestContainer extends Container {
 		if (hasPocketChainEnchant(slot)) {
 			return ItemStack.EMPTY;
 		}
+		if (slot.hasItem() && !slot.isPlayerInventory()) {
+			if (canStoleQnt <= 0) {
+				pPlayer.closeContainer();
+				return ItemStack.EMPTY;
+			}
+			canStoleQnt--;
+		}
 
 		return super.clicked(pSlotId, pDragType, pClickType, pPlayer);
 	}
@@ -133,9 +148,15 @@ public class CustomChestContainer extends Container {
 	 */
 	public void removed(PlayerEntity pPlayer) {
 		if (Config.COMMON.SHOW_MISSING.get()) {
+			// creating missing item
+			ItemStack missing = Registry.MISSING.get().getDefaultInstance();
+			CompoundNBT compoundNBT = new CompoundNBT();
+			compoundNBT.putLong("stolenTime", System.currentTimeMillis());
+			missing.setTag(compoundNBT);
+
 			for (Integer initialSlot : initialSlots) {
 				if (!getSlot(initialSlot).hasItem()) {
-					getSlot(initialSlot).set(Registry.MISSING.get().getDefaultInstance());
+					getSlot(initialSlot).set(missing);
 				}
 			}
 		}
