@@ -34,7 +34,6 @@ public class CustomSlot extends Slot {
 			case 3:
 				return eqp.equals(EquipmentSlotType.FEET);
 			default:
-				System.out.println("2");
 				return false;
 		}
 	}

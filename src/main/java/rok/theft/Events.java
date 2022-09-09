@@ -1,24 +1,16 @@
 package rok.theft;
 
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.enchanting.EnchantmentLevelSetEvent;
-import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -31,7 +23,6 @@ import rok.theft.utils.TraceUtils;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 /*
  * @author Rok created on 11/08/2022
@@ -84,11 +75,9 @@ public class Events {
 			// PlaySound
 			if (tickCount % 40 == 0 && cdTime >= 3) {
 				target.playSound(SoundEvents.NOTE_BLOCK_BANJO, 0.1F, 1F);
-			} else
-			if (tickCount % 20 == 0 && cdTime < 3) {
+			} else if (tickCount % 20 == 0 && cdTime < 3) {
 				target.playSound(SoundEvents.NOTE_BLOCK_BANJO, 0.1F, 1F);
-			} else
-			if (tickCount % 4 == 0 && cdTime < 1) {
+			} else if (tickCount % 4 == 0 && cdTime < 1) {
 				target.playSound(SoundEvents.NOTE_BLOCK_BANJO, 0.1F, 1F);
 			}
 		});
@@ -118,13 +107,11 @@ public class Events {
 
 		// Getting if is damageable
 		if (Config.COMMON.DAMAGE_ITEM.get()) {
-			e.getPlayer().getMainHandItem().hurtAndBreak(1, e.getPlayer(), (p_220041_1_) -> {
-				p_220041_1_.broadcastBreakEvent(e.getPlayer().getUsedItemHand());
-			});
+			e.getPlayer().getMainHandItem().hurtAndBreak(1, e.getPlayer(), (p_220041_1_) -> p_220041_1_.broadcastBreakEvent(e.getPlayer().getUsedItemHand()));
 		}
 
 		// Play soundEffect
-		e.getPlayer().playSound(SoundEvents.LEASH_KNOT_BREAK,0.5F, 1F);
+		e.getPlayer().playSound(SoundEvents.LEASH_KNOT_BREAK, 0.5F, 1F);
 
 		e.getPlayer().setForcedPose(null);
 	}
@@ -149,12 +136,14 @@ public class Events {
 		if (player == null) return;
 		player.closeContainer();
 	}
+
 	@SubscribeEvent
 	public void onDropItem(ItemTossEvent e) {
 		if (e.getEntityItem().getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
 			e.setCanceled(true);
 		}
 	}
+
 	@SubscribeEvent
 	public void onHoverEvent(RenderTooltipEvent e) {
 		if (Config.COMMON.SHOW_MISSING_HOVER.get()) return;
@@ -167,7 +156,6 @@ public class Events {
 	public void onDayPassEvent(SleepFinishedTimeEvent e) {
 		if (!Config.COMMON.COOLDOWN_RESET_SLEEP.get()) return;
 
-		long timePass = e.getNewTime()-e.getWorld().dayTime();
 		for (PlayerEntity player : e.getWorld().players()) {
 			player.getCooldowns().removeCooldown(Registry.THIEF_GLOVE.get());
 		}
