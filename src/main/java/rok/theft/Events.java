@@ -3,6 +3,7 @@ package rok.theft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.ServerCooldownTracker;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraftforge.client.event.RenderTooltipEvent;
@@ -16,6 +17,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import rok.theft.init.Registry;
+import rok.theft.mixins.MixinServerCooldownTracker;
 import rok.theft.packets.StartTheftPacket;
 import rok.theft.utils.CooldownUtils;
 import rok.theft.utils.TraceUtils;
@@ -157,7 +159,8 @@ public class Events {
 		if (!Config.COMMON.COOLDOWN_RESET_SLEEP.get()) return;
 
 		for (PlayerEntity player : e.getWorld().players()) {
-			player.getCooldowns().removeCooldown(Registry.THIEF_GLOVE.get());
+			ServerPlayerEntity sp = (ServerPlayerEntity) player;
+			((MixinServerCooldownTracker) sp.getCooldowns()).onCooldownEnded(Registry.THIEF_GLOVE.get());
 		}
 	}
 }
