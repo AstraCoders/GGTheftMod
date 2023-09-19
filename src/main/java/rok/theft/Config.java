@@ -51,6 +51,7 @@ public class Config {
 			builder.push("loot");
 			GENERATE_LOOT = builder.comment("Should generate loot at shipwreck, pillager outpost and mineshaft").define("generate_loot", true);
 			GENERATE_LOOT_CHANCE = builder.comment("Chance to generate loot").defineInRange("generate_loot_chance", 50, 0, 100);
+			builder.pop();
 		}
 	}
 	static final ForgeConfigSpec COMMON_SPEC;
