@@ -133,6 +133,9 @@ public class CustomChestContainer extends Container {
 			return ItemStack.EMPTY;
 		}
 
+		System.out.println("ClickType: " + pClickType);
+		if (pClickType.equals(ClickType.PICKUP_ALL)) return ItemStack.EMPTY;
+
 		if (Config.COMMON.LIMIT_STEAL_ITEM.get()) {
 			if (slot.hasItem() && !slot.isPlayerInventory()) {
 				if (canStoleQnt <= 0) {
