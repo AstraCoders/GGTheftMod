@@ -1,24 +1,16 @@
 package rok.theft;
 
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.enchanting.EnchantmentLevelSetEvent;
-import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -31,12 +23,14 @@ import rok.theft.utils.TraceUtils;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 /*
  * @author Rok created on 11/08/2022
  */
+
 public class Events {
+
+
 	// TARGET | WATCHING
 	private static final ConcurrentHashMap<UUID, UUID> watching = new ConcurrentHashMap<>();
 
@@ -167,7 +161,7 @@ public class Events {
 	public void onDayPassEvent(SleepFinishedTimeEvent e) {
 		if (!Config.COMMON.COOLDOWN_RESET_SLEEP.get()) return;
 
-		long timePass = e.getNewTime()-e.getWorld().dayTime();
+		long timePass = e.getNewTime() - e.getWorld().dayTime();
 		for (PlayerEntity player : e.getWorld().players()) {
 			player.getCooldowns().removeCooldown(Registry.THIEF_GLOVE.get());
 		}

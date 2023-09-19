@@ -26,8 +26,10 @@ public class Registry {
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Theft.MOD_ID);
 	public static final DeferredRegister<ContainerType<?>> CONTAINER_REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, Theft.MOD_ID);
 	public static final DeferredRegister<Enchantment> ENCHANTMENT_REGISTRY = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, Theft.MOD_ID);
+
 	public static final RegistryObject<ContainerType<CustomChestContainer>> CUSTOM_CHEST = CONTAINER_REGISTRY.register("theft_container", () -> new ContainerType<>(CustomChestContainer::new));
 	public static final RegistryObject<Item> THIEF_GLOVE = ITEMS.register("glove", ThiefGloveItem::new);
 	public static final RegistryObject<Item> MISSING = ITEMS.register("missing", MissingItem::new);
 	public static final RegistryObject<Enchantment> POCKET_CHAIN = ENCHANTMENT_REGISTRY.register("pocket_chain", PocketChainEnchant::new);
+
 }

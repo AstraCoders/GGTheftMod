@@ -22,6 +22,8 @@ public class Config {
 		public final ForgeConfigSpec.IntValue LIMIT_ITEM_NUMBER;
 		public final ForgeConfigSpec.IntValue COOLDOWN_TO_STEAL;
 		public final ForgeConfigSpec.BooleanValue COOLDOWN_RESET_SLEEP;
+		public final ForgeConfigSpec.BooleanValue GENERATE_LOOT;
+		public final ForgeConfigSpec.IntValue GENERATE_LOOT_CHANCE;
 
 		Common(ForgeConfigSpec.Builder builder) {
 			builder.comment("Common config").push("misc");
@@ -45,7 +47,10 @@ public class Config {
 			STEAL_TIME = builder.comment("Time to steal player").defineInRange("steal_time", 16, 0, 999);
 			STEAL_TITLE = builder.comment("Stealing inventory should have a title? (Example: \"Stealing Steve\")").define("steal_title_enabled", true);
 			builder.pop();
-			
+
+			builder.push("loot");
+			GENERATE_LOOT = builder.comment("Should generate loot at shipwreck, pillager outpost and mineshaft").define("generate_loot", true);
+			GENERATE_LOOT_CHANCE = builder.comment("Chance to generate loot").defineInRange("generate_loot_chance", 50, 0, 100);
 		}
 	}
 	static final ForgeConfigSpec COMMON_SPEC;

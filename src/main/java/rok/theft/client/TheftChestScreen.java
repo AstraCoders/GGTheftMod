@@ -50,14 +50,8 @@ public class TheftChestScreen extends ContainerScreen<CustomChestContainer> impl
 		int i = (this.width - this.imageWidth) / 2;
 		int j = (this.height - this.imageHeight) / 2;
 
-		String cd1 = "o_t_e_r_c_e_S t_f_a_r_c_e_n_i_M e_i_r_e_s a_d l_a_i_c_i_f_O d_o_M";
-		cd1 = cd1.replace("_", "");
-		String[] split = cd1.split("");
-		StringBuilder newCd = new StringBuilder();
-		for (int i1 = cd1.length()-1; 0 <= i1; i1--) {
-			newCd.append(cd1.charAt(i1));
-		}
-		this.font.drawShadow(pMatrixStack, new StringTextComponent(newCd.toString()), i-8, j + 58, 11141120);
+
+		this.font.drawShadow(pMatrixStack, new StringTextComponent("By Rok and Carmello"), i+10, j+ 58, 255255255); // 11141120 - i-8, j + 58
 
 
 		// Item Limit
