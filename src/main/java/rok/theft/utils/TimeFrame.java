@@ -1,6 +1,5 @@
 package rok.theft.utils;
 
-import net.minecraft.client.resources.Language;
 import net.minecraft.util.text.LanguageMap;
 
 import java.text.SimpleDateFormat;
@@ -128,24 +127,24 @@ public class TimeFrame {
 		String day = LanguageMap.getInstance().getOrDefault("timeframe.theft.day");
 		String and = LanguageMap.getInstance().getOrDefault("timeframe.theft.and");
 
-		String dia = this.getDays() >= 2 ? day+"s" : day;
-		String hora = this.getHours() >= 2 ? hour+"s" : hour;
-		String minuto = this.getMinutes() >= 2 ? minute+"s" : minute;
-		String segundo = this.getSeconds() >= 2 || ((includeMillis || this.getSeconds() == 0) && (this.millis % 1000) >= 2) ? second+"s" : second;
+		String dia = this.getDays() >= 2 ? day + "s" : day;
+		String hora = this.getHours() >= 2 ? hour + "s" : hour;
+		String minuto = this.getMinutes() >= 2 ? minute + "s" : minute;
+		String segundo = this.getSeconds() >= 2 || ((includeMillis || this.getSeconds() == 0) && (this.millis % 1000) >= 2) ? second + "s" : second;
 
 		StringBuilder stringBuilder = new StringBuilder();
 
 		if (this.getDays() > 0) {
-			stringBuilder.append(this.getDays() + " " + dia);
+			stringBuilder.append(this.getDays()).append(" ").append(dia);
 		}
 		if (this.getHours() > 0) {
-			stringBuilder.append((stringBuilder.length() > 0 ? ", " : "") + this.getHours() + " " + hora);
+			stringBuilder.append(stringBuilder.length() > 0 ? ", " : "").append(this.getHours()).append(" ").append(hora);
 		}
 		if (this.getMinutes() > 0) {
-			stringBuilder.append((stringBuilder.length() > 0 ? ", " : "") + this.getMinutes() + " " + minuto);
+			stringBuilder.append(stringBuilder.length() > 0 ? ", " : "").append(this.getMinutes()).append(" ").append(minuto);
 		}
 		if (this.getSeconds() > 0 || includeMillis) {
-			stringBuilder.append((stringBuilder.length() > 0 ? ", " : "") + this.getSeconds() + (includeMillis ? "." + (this.millis % 1000) : "") + " " + segundo);
+			stringBuilder.append(stringBuilder.length() > 0 ? ", " : "").append(this.getSeconds()).append(includeMillis ? "." + (this.millis % 1000) : "").append(" ").append(segundo);
 		}
 		for (int i = stringBuilder.length() - 1; i > 0; i--) {
 			char aChar = stringBuilder.charAt(i);

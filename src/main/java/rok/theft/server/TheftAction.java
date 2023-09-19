@@ -6,13 +6,11 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.LanguageMap;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkDirection;
-import rok.theft.Events;
 import rok.theft.Config;
+import rok.theft.Events;
 import rok.theft.Theft;
 import rok.theft.container.CustomChestContainer;
 import rok.theft.container.TargetPlayerInventory;
@@ -35,9 +33,10 @@ public class TheftAction {
 		player.openMenu(new INamedContainerProvider() {
 			@Override
 			public ITextComponent getDisplayName() {
-				if (Config.COMMON.STEAL_TITLE.get())
-					return new StringTextComponent(LanguageMap.getInstance().getOrDefault("gui.theft.stealing") + " " + target.getDisplayName().getString());
-				return new StringTextComponent(LanguageMap.getInstance().getOrDefault("gui.theft.stealing"));
+				if (Config.COMMON.STEAL_TITLE.get()) {
+					return new TranslationTextComponent("gui.theft.stealing").append(" ").append(target.getDisplayName());
+				}
+				return new TranslationTextComponent("gui.theft.stealing");
 			}
 
 			@Override

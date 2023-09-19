@@ -10,5 +10,6 @@
   "timeframe.theft.minute": "minuto",
   "timeframe.theft.hour": "hora",
   "timeframe.theft.day": "dia",
-  "timeframe.theft.and": "e"
+  "timeframe.theft.and": "e",
+  "enchantment.theft.pocket_chain.description": "§7Impede o ladrão de roubar seu item."
 }

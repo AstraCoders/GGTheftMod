@@ -12,13 +12,12 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.LongNBT;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import rok.theft.Config;
+import rok.theft.Constants;
 import rok.theft.init.Registry;
-import rok.theft.utils.CooldownUtils;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -160,8 +159,8 @@ public class CustomChestContainer extends Container {
 		// creating missing item
 		if (Config.COMMON.SHOW_MISSING.get()) {
 			ItemStack missing = Registry.MISSING.get().getDefaultInstance();
-
-			missing.addTagElement("stolenTime", LongNBT.valueOf(System.currentTimeMillis()));
+			CompoundNBT nbt = missing.getOrCreateTag();
+			nbt.putLong(Constants.STOLEN_TIME_NBT, System.currentTimeMillis());
 
 			for (Integer initialSlot : initialSlots) {
 				if (!getSlot(initialSlot).hasItem()) {

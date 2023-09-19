@@ -19,9 +19,7 @@ import rok.theft.items.ThiefGloveItem;
 public class Registry {
 
 	public static void init() {
-		EnchantmentType.create("ALL", item -> {
-			return true;
-		});
+		EnchantmentType.create("ALL", item -> true);
 	}
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Theft.MOD_ID);
 	public static final DeferredRegister<ContainerType<?>> CONTAINER_REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, Theft.MOD_ID);

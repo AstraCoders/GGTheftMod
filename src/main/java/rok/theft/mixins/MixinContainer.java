@@ -20,13 +20,16 @@ public abstract class MixinContainer {
 	@Inject(method = "doClick", at = @At("HEAD"))
 	public void doClick(int pSlotId, int pDragType, ClickType pClickType, PlayerEntity pPlayer, CallbackInfoReturnable<ItemStack> cir) {
 		if (pSlotId < 0) return;
+
 		Slot slot;
+
 		try {
 			slot = pPlayer.containerMenu.getSlot(pSlotId);
 		} catch (IndexOutOfBoundsException e) {
 			return;
 		}
 		if (slot == null) return;
+
 		if (!slot.hasItem()) return;
 		if (slot.getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance())) {
 			pPlayer.playSound(SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1F, 2F);

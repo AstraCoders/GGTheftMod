@@ -11,4 +11,9 @@ public class PocketChainEnchant extends Enchantment {
 	public PocketChainEnchant(EquipmentSlotType... pApplicableSlots) {
 		super(Rarity.COMMON, EnchantmentType.valueOf("ALL"), pApplicableSlots);
 	}
+
+	@Override
+	public String getDescriptionId() {
+		return "enchantment.theft.pocket_chain.description";
+	}
 }
