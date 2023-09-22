@@ -1,0 +1,21 @@
+{
+  "item.theft.glove": "Guante del Ladrón",
+  "item.theft.glove.lore": "§7Haz clic derecho en la espalda de un jugador\n§7Mientras estás agachado para robarlo.",
+  "itemGroup.theft_tab": "Ladrón Mod",
+  "gui.theft.stealing": "Robando",
+  "item.theft.missing": "Objeto robado",
+  "item.theft.missing.lore": "§7Robado hace ${time}\n§8Haz clic para eliminar.",
+  "enchantment.theft.pocket_chain": "Cadena de bolsillo",
+  "cooldown.theft.left": "§cEspera para robar de nuevo",
+  "timeframe.theft.second": "segundo",
+  "timeframe.theft.minute": "minuto",
+  "timeframe.theft.hour": "hora",
+  "timeframe.theft.day": "día",
+  "timeframe.theft.and": "y",
+  "enchantment.theft.pocket_chain.description": "§7Evita que el ladrón robe tu objeto."
+}
+
+
+
+
+

@@ -21,6 +21,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import rok.theft.Config;
+import rok.theft.init.CreativeTab;
+import rok.theft.init.Registry;
 import rok.theft.server.TheftAction;
 import rok.theft.utils.TraceUtils;
 
@@ -32,7 +34,7 @@ import java.util.List;
  */
 public class ThiefGloveItem extends Item {
 	public ThiefGloveItem() {
-		super(new Properties().tab(ItemGroup.TAB_COMBAT).stacksTo(1).durability(Config.COMMON.ITEM_DURABILITY.get()).setNoRepair());
+		super(new Properties().tab(CreativeTab.GLOVE_TAB).stacksTo(1).durability(Config.COMMON.ITEM_DURABILITY.get()).setNoRepair());
 	}
 
 	@Override

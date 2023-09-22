@@ -18,7 +18,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'rok.theft'
-version = '1.5'
+version = '1.5.1'
 
 java {
     archivesBaseName = 'Theft'
