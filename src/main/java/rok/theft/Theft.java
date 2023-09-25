@@ -54,7 +54,6 @@ public class Theft {
     }
 
 
-
     public void onClientRegister(FMLClientSetupEvent e) {
         ClientStuff.init(e);
     }

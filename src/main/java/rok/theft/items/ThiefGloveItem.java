@@ -16,6 +16,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
+import rok.theft.Config;
 import rok.theft.server.TheftAction;
 import rok.theft.utils.TraceUtils;
 
@@ -27,7 +28,7 @@ import java.util.List;
  */
 public class ThiefGloveItem extends Item {
 	public ThiefGloveItem() {
-		super(new Properties().stacksTo(1).durability(2).setNoRepair());
+		super(new Properties().stacksTo(1).durability(8).setNoRepair());
 	}
 
 	@Override
@@ -65,10 +66,6 @@ public class ThiefGloveItem extends Item {
 
 	@Override
 	public void appendHoverText(@NotNull ItemStack pStack, @Nullable Level pLevel, @NotNull List<Component> pTooltip, TooltipFlag pFlag) {
-//		String[] split = I18n.get("item.theft.glove.lore").split("\n");
-//		for (String s : split) {
-//			pTooltip.add(Component.literal(s));
-//		}
 		pTooltip.add(Component.translatable("item.theft.glove.lore"));
 		super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
 	}

@@ -15,6 +15,6 @@ public class PocketChainEnchant extends Enchantment {
 
     @Override
     public @NotNull String getDescriptionId() {
-        return "enchantment.theft.pocket_chain.description";
+        return "enchantment.theft.pocket_chain";
     }
 }

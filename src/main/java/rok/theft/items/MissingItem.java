@@ -29,7 +29,6 @@ public class MissingItem extends Item {
         return false;
     }
 
-    // TODO: se for para fazer o tempo roubado no nome, ou na lore
     @Override
     public Component getName(ItemStack pStack) {
         return super.getName(pStack);
@@ -52,7 +51,7 @@ public class MissingItem extends Item {
 
         String[] split = lore.split("\n");
         for (String s : split) {
-            pTooltip.add(Component.literal(s)); // TODO: ITextComponent to Component.literal
+            pTooltip.add(Component.literal(s));
         }
     }
 }

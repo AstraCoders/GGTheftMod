@@ -4,10 +4,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -32,7 +35,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Mod.EventBusSubscriber(modid = Theft.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Events {
-
 
 	// TARGET | WATCHING
 	private static final ConcurrentHashMap<UUID, UUID> watching = new ConcurrentHashMap<>();
@@ -166,7 +168,6 @@ public class Events {
 	public void onDayPassEvent(SleepFinishedTimeEvent e) {
 		if (!Config.COMMON.COOLDOWN_RESET_SLEEP.get()) return;
 
-//		long timePass = e.getNewTime()-e.getLevel().dayTime();
 		for (Player player : e.getLevel().players()) {
 			player.getCooldowns().removeCooldown(Registry.THIEF_GLOVE.get());
 		}

@@ -34,7 +34,7 @@ public class Config {
 			
 			builder.push("glove");
 			DAMAGE_ITEM = builder.comment("Should damage item on every use").define("damage_item", true);
-			ITEM_DURABILITY = builder.comment("Item durability").defineInRange("item_durability", 16, 0, 255);
+			ITEM_DURABILITY = builder.comment("Item durability (Currently unavailable 1.20.x) default is 8").defineInRange("item_durability", 16, 0, 255); // #TODO: FIX THIS
 			COOLDOWN_TO_STEAL = builder.comment("How long will the player have to wait to steal again? ( In seconds / 0 to deactivate )").defineInRange("cooldown_to_steal",10, 0,86400);
 			COOLDOWN_RESET_SLEEP = builder.comment("Should reset steal cooldown when the player sleeps?").define("cooldown_reset_sleep", false);
 			builder.pop();
