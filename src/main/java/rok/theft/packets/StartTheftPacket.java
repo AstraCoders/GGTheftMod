@@ -1,8 +1,8 @@
 package rok.theft.packets;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 import rok.theft.client.ClientStuff;
 
 import java.util.function.Supplier;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 public class StartTheftPacket {
 	int time;
 
-	public StartTheftPacket(PacketBuffer buf) {
+	public StartTheftPacket(FriendlyByteBuf buf) {
 		this.time = buf.readInt();
 	}
 
@@ -21,7 +21,7 @@ public class StartTheftPacket {
 		this.time = time;
 	}
 
-	public static void buffer(StartTheftPacket packet, PacketBuffer buf) {
+	public static void buffer(StartTheftPacket packet, FriendlyByteBuf buf) {
 		buf.writeInt(packet.time);
 	}
 
@@ -32,7 +32,7 @@ public class StartTheftPacket {
 		ctx.setPacketHandled(true);
 	}
 
-	private static void startAction(PlayerEntity entity, StartTheftPacket packet) {
+	private static void startAction(ServerPlayer entity, StartTheftPacket packet) {
 		ClientStuff.theftTime = packet.time;
 	}
 }

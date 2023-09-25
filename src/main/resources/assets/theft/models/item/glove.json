@@ -1,7 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "theft:items/thief_glove"
+    "layer0": "theft:item/thief_glove"
   },
   "display": {
     "thirdperson_righthand": {

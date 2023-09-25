@@ -1,7 +1,8 @@
 {
+  "type": "theft:theft_loot",
   "conditions": [
     {
-      "condition": "minecraft:alternative",
+      "condition": "minecraft:any_of",
       "terms": [
         {
           "condition": "forge:loot_table_id",
@@ -26,5 +27,5 @@
       ]
     }
   ],
-  "addition": "theft:glove"
+  "item": "theft:glove"
 }

@@ -1,7 +1,7 @@
 {
   "item.theft.glove": "Thief's Glove",
   "item.theft.glove.lore": "§7Right click on a player's back\n§7While crouching to steal it!",
-  "itemGroup.theft_tab": "Theft Mod",
+  "tab.theft.name": "Theft Mod",
   "gui.theft.stealing": "Stealing",
   "item.theft.missing": "Stolen Item",
   "item.theft.missing.lore": "§7Stolen at ${time} ago\n§8Click to remove.",

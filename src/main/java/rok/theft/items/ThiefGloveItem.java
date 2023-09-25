@@ -1,28 +1,21 @@
 package rok.theft.items;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.STitlePacket;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.LanguageMap;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import rok.theft.Config;
-import rok.theft.init.CreativeTab;
-import rok.theft.init.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 import rok.theft.server.TheftAction;
 import rok.theft.utils.TraceUtils;
 
@@ -34,27 +27,26 @@ import java.util.List;
  */
 public class ThiefGloveItem extends Item {
 	public ThiefGloveItem() {
-		super(new Properties().tab(CreativeTab.GLOVE_TAB).stacksTo(1).durability(Config.COMMON.ITEM_DURABILITY.get()).setNoRepair());
+		super(new Properties().stacksTo(1).durability(2).setNoRepair());
 	}
 
 	@Override
-	public ActionResultType interactLivingEntity(ItemStack pStack, PlayerEntity pPlayer, LivingEntity pTarget, Hand pHand) {
-		if (pPlayer.level.isClientSide) return ActionResultType.FAIL;
-		ServerPlayerEntity player = (ServerPlayerEntity) pPlayer;
-		if (pTarget.getType() != EntityType.PLAYER) return ActionResultType.FAIL;
-		ServerPlayerEntity target = (ServerPlayerEntity) pTarget;
-		if (!player.isCrouching()) return ActionResultType.FAIL;
+	public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack pStack, Player pPlayer, @NotNull LivingEntity pTarget, InteractionHand pHand) {
+		if (pPlayer.level().isClientSide) return InteractionResult.FAIL;
+		ServerPlayer player = (ServerPlayer) pPlayer;
+		if (pTarget.getType() != EntityType.PLAYER) return InteractionResult.FAIL;
+		ServerPlayer target = (ServerPlayer) pTarget;
+		if (!player.isCrouching()) return InteractionResult.FAIL;
 
-		EntityRayTraceResult rtr = TraceUtils.rayTraceEntity(target, entity -> entity == player, 6);
-		if (rtr != null) return ActionResultType.FAIL;
-		if (target.isCreative()) return ActionResultType.FAIL;
+		EntityHitResult rtr = TraceUtils.rayTraceEntity(target, entity -> entity == player, 6);
+		if (rtr != null) return InteractionResult.FAIL;
+		if (target.isCreative()) return InteractionResult.FAIL;
 
 		// COOLDOWN
 		if (player.getCooldowns().isOnCooldown(pStack.getItem())) {
-			STitlePacket titlePacket = new STitlePacket(STitlePacket.Type.ACTIONBAR, new TranslationTextComponent("cooldown.theft.left"), 15, 50, 15);
-			player.connection.send(titlePacket);
-			player.playSound(SoundEvents.NOTE_BLOCK_DIDGERIDOO, 0.3F, 1F);
-			return ActionResultType.FAIL;
+			player.playSound(SoundEvents.NOTE_BLOCK_DIDGERIDOO.get(), 0.3F, 1F);
+			player.displayClientMessage(Component.translatable("cooldown.theft.left"), true);
+			return InteractionResult.FAIL;
 		}
 
 		player.setForcedPose(Pose.CROUCHING);
@@ -62,21 +54,22 @@ public class ThiefGloveItem extends Item {
 
 		// Adding SFX
 		player.playSound(SoundEvents.LEASH_KNOT_BREAK, 0.2F, 1F);
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public ActionResult<ItemStack> use(World pWorld, PlayerEntity pPlayer, Hand pHand) {
-		if (pWorld.isClientSide) return ActionResult.pass(pPlayer.getItemInHand(pHand));
+	public @NotNull InteractionResultHolder<ItemStack> use(Level pWorld, @NotNull Player pPlayer, @NotNull InteractionHand pHand) {
+		if (pWorld.isClientSide) return InteractionResultHolder.pass(pPlayer.getItemInHand(pHand));
 		return super.use(pWorld, pPlayer, pHand);
 	}
 
 	@Override
-	public void appendHoverText(ItemStack pStack, @Nullable World pLevel, List<ITextComponent> pTooltip, ITooltipFlag pFlag) {
-		String[] split = LanguageMap.getInstance().getOrDefault("item.theft.glove.lore").split("\n");
-		for (String s : split) {
-			pTooltip.add(new StringTextComponent(s));
-		}
+	public void appendHoverText(@NotNull ItemStack pStack, @Nullable Level pLevel, @NotNull List<Component> pTooltip, TooltipFlag pFlag) {
+//		String[] split = I18n.get("item.theft.glove.lore").split("\n");
+//		for (String s : split) {
+//			pTooltip.add(Component.literal(s));
+//		}
+		pTooltip.add(Component.translatable("item.theft.glove.lore"));
 		super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
 	}
 }

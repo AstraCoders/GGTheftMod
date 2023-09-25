@@ -1,6 +1,7 @@
 package rok.theft.utils;
 
-import net.minecraft.util.text.LanguageMap;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.locale.Language;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -121,11 +122,11 @@ public class TimeFrame {
 	}
 
 	public String getFormatedDiscursive(boolean includeMillis) {
-		String second = LanguageMap.getInstance().getOrDefault("timeframe.theft.second");
-		String minute = LanguageMap.getInstance().getOrDefault("timeframe.theft.minute");
-		String hour = LanguageMap.getInstance().getOrDefault("timeframe.theft.hour");
-		String day = LanguageMap.getInstance().getOrDefault("timeframe.theft.day");
-		String and = LanguageMap.getInstance().getOrDefault("timeframe.theft.and");
+		String second = I18n.get("timeframe.theft.second");
+		String minute = I18n.get("timeframe.theft.minute");
+		String hour = I18n.get("timeframe.theft.hour");
+		String day = I18n.get("timeframe.theft.day");
+		String and = I18n.get("timeframe.theft.and");
 
 		String dia = this.getDays() >= 2 ? day + "s" : day;
 		String hora = this.getHours() >= 2 ? hour + "s" : hour;

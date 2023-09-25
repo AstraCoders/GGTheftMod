@@ -1,7 +1,7 @@
 {
   "item.theft.glove": "Guante del Ladrón",
   "item.theft.glove.lore": "§7Haz clic derecho en la espalda de un jugador\n§7Mientras estás agachado para robarlo.",
-  "itemGroup.theft_tab": "Ladrón Mod",
+  "tab.theft.name": "Ladrón Mod",
   "gui.theft.stealing": "Robando",
   "item.theft.missing": "Objeto robado",
   "item.theft.missing.lore": "§7Robado hace ${time}\n§8Haz clic para eliminar.",

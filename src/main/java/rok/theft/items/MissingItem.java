@@ -1,14 +1,13 @@
 package rok.theft.items;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.LanguageMap;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.locale.Language;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import rok.theft.Constants;
 import rok.theft.utils.TimeFrame;
 
@@ -19,40 +18,41 @@ import java.util.List;
  * @author Rok, Pedro Lucas N M Machado created on 24/08/2022
  */
 public class MissingItem extends Item {
-	public MissingItem() {
-		super(new Properties().stacksTo(1));
-	}
+    public MissingItem() {
+        super(new Properties().stacksTo(1));
+    }
 
-	@Override
-	public boolean onDroppedByPlayer(ItemStack item, PlayerEntity player) {
-		item.setCount(0);
-		return false;
-	}
 
-	// TODO: se for para fazer o tempo roubado no nome, ou na lore
-	@Override
-	public ITextComponent getName(ItemStack pStack) {
-		return super.getName(pStack);
-	}
+    @Override
+    public boolean onDroppedByPlayer(ItemStack item, Player player) {
+        item.setCount(0);
+        return false;
+    }
 
-	@Override
-	public void appendHoverText(ItemStack pStack, @Nullable World pLevel, List<ITextComponent> pTooltip, ITooltipFlag pFlag) {
-		String lore = LanguageMap.getInstance().getOrDefault("item.theft.missing.lore");
+    // TODO: se for para fazer o tempo roubado no nome, ou na lore
+    @Override
+    public Component getName(ItemStack pStack) {
+        return super.getName(pStack);
+    }
 
-		CompoundNBT stolenTime = pStack.getOrCreateTag();
+    @Override
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
+        String lore = Language.getInstance().getOrDefault("item.theft.missing.lore");
 
-		if (!stolenTime.contains(Constants.STOLEN_TIME_NBT)) {
-			return;
-		}
+        CompoundTag stolenTime = pStack.getOrCreateTag();
 
-		long time = System.currentTimeMillis() - stolenTime.getLong(Constants.STOLEN_TIME_NBT);
-		String formattedTime = new TimeFrame(time).getFormatedDiscursive();
+        if (!stolenTime.contains(Constants.STOLEN_TIME_NBT)) {
+            return;
+        }
 
-		lore = lore.replace("${time}", formattedTime);
+        long time = System.currentTimeMillis() - stolenTime.getLong(Constants.STOLEN_TIME_NBT);
+        String formattedTime = new TimeFrame(time).getFormatedDiscursive();
 
-		String[] split = lore.split("\n");
-		for (String s : split) {
-			pTooltip.add(new StringTextComponent(s));
-		}
-	}
+        lore = lore.replace("${time}", formattedTime);
+
+        String[] split = lore.split("\n");
+        for (String s : split) {
+            pTooltip.add(Component.literal(s)); // TODO: ITextComponent to Component.literal
+        }
+    }
 }

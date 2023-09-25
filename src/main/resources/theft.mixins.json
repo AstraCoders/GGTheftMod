@@ -6,7 +6,6 @@
   "refmap": "theft.refmap.json",
   "mixins": [
     "MixinContainer",
-    "MixinServerCooldownTracker"
   ],
   "client": [
   ],

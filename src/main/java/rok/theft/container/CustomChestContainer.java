@@ -1,20 +1,22 @@
 package rok.theft.container;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import rok.theft.Config;
 import rok.theft.Constants;
 import rok.theft.init.Registry;
@@ -26,24 +28,23 @@ import java.util.Set;
 /*
  * @author Rok, Pedro Lucas N M Machado created on 12/08/2022
  */
-public class CustomChestContainer extends Container {
-	private final IInventory container;
+public class CustomChestContainer extends AbstractContainerMenu {
+	private final Container container;
 	private final Set<Integer> initialSlots = new HashSet<>();
 	private final int containerRows;
 	public int canStoleQnt;
 
 	private final ItemStack glove;
 
-	public CustomChestContainer(int pContainerId, PlayerInventory pPlayerInventory) {
-		this(pContainerId, pPlayerInventory, new Inventory(5 * 9), null);
+	public CustomChestContainer(int pContainerId, Inventory pPlayerInventory) {
+		this(pContainerId, pPlayerInventory, new SimpleContainer(5 * 9), null);
 	}
 
-
-	public CustomChestContainer(int pContainerId, PlayerInventory pPlayerInventory, IInventory pContainer, ItemStack glove) {
+	public CustomChestContainer(int pContainerId, Inventory pPlayerInventory, Container pContainer, ItemStack glove) {
 		this(Registry.CUSTOM_CHEST.get(), pContainerId, pPlayerInventory, pContainer, 5, glove);
 	}
 
-	public CustomChestContainer(ContainerType<?> pType, int pContainerId, PlayerInventory pPlayerInventory, IInventory pContainer, int pRows, ItemStack glove) {
+	public CustomChestContainer(MenuType<?> pType, int pContainerId, Inventory pPlayerInventory, Container pContainer, int pRows, ItemStack glove) {
 		super(pType, pContainerId);
 		checkContainerSize(pContainer, pRows * 9);
 		this.container = pContainer;
@@ -85,10 +86,12 @@ public class CustomChestContainer extends Container {
 		}
 	}
 
+
 	/**
 	 * Determines whether supplied player can use this container
 	 */
-	public boolean stillValid(PlayerEntity pPlayer) {
+	@Override
+	public boolean stillValid(Player pPlayer) {
 		return this.container.stillValid(pPlayer);
 	}
 
@@ -96,7 +99,8 @@ public class CustomChestContainer extends Container {
 	 * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
 	 * inventory and the other inventory(s).
 	 */
-	public ItemStack quickMoveStack(PlayerEntity pPlayer, int pIndex) {
+	@Override
+	public @NotNull ItemStack quickMoveStack(Player pPlayer, int pIndex) {
 		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = this.slots.get(pIndex);
 		if (slot != null && slot.hasItem()) {
@@ -110,6 +114,7 @@ public class CustomChestContainer extends Container {
 				return ItemStack.EMPTY;
 			}
 
+
 			if (itemstack1.isEmpty()) {
 				slot.set(ItemStack.EMPTY);
 			} else {
@@ -119,40 +124,41 @@ public class CustomChestContainer extends Container {
 		return itemstack;
 	}
 
+
 	@Override
-	public ItemStack clicked(int pSlotId, int pDragType, ClickType pClickType, PlayerEntity pPlayer) {
-		if (pSlotId < 0) return super.clicked(pSlotId, pDragType, pClickType, pPlayer);
+	public void clicked(int pSlotId, int pDragType, @NotNull ClickType pClickType, Player pPlayer) {
+		if (pSlotId < 0) return;
 		CustomSlot slot = (CustomSlot) getSlot(pSlotId);
 		if (isMissingItem(slot)) {
 			pPlayer.playSound(SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1F, 2F);
 			slot.remove(slot.getItem().getCount());
-			return ItemStack.EMPTY;
+			return;
 		} else if (isGlooveItem(slot)) {
-			return ItemStack.EMPTY;
+			return;
 		} else if (hasPocketChainEnchant(slot)) {
-			return ItemStack.EMPTY;
+			return;
 		}
 
-		if (pClickType.equals(ClickType.PICKUP_ALL)) return ItemStack.EMPTY;
+		if (pClickType.equals(ClickType.PICKUP_ALL)) return;
 
 		if (Config.COMMON.LIMIT_STEAL_ITEM.get()) {
 			if (slot.hasItem() && !slot.isPlayerInventory()) {
 				if (canStoleQnt <= 0) {
 					pPlayer.closeContainer();
-					return ItemStack.EMPTY;
+					return;
 				}
 				canStoleQnt--;
 			}
 		}
 
-		return super.clicked(pSlotId, pDragType, pClickType, pPlayer);
+		super.clicked(pSlotId, pDragType, pClickType, pPlayer);
 	}
 
 	/**
 	 * Called when the container is closed.
 	 */
 	@Override
-	public void removed(PlayerEntity pPlayer) {
+	public void removed(Player pPlayer) {
 
 		// time in cooldown
 		if (Config.COMMON.COOLDOWN_TO_STEAL.get() != 0 && glove != null) {
@@ -162,7 +168,7 @@ public class CustomChestContainer extends Container {
 		// creating missing item
 		if (Config.COMMON.SHOW_MISSING.get()) {
 			ItemStack missing = Registry.MISSING.get().getDefaultInstance();
-			CompoundNBT nbt = missing.getOrCreateTag();
+			CompoundTag nbt = missing.getOrCreateTag();
 			nbt.putLong(Constants.STOLEN_TIME_NBT, System.currentTimeMillis());
 
 			for (Integer initialSlot : initialSlots) {
@@ -181,11 +187,11 @@ public class CustomChestContainer extends Container {
 	}
 
 	private boolean isGlooveItem(Slot slot) {
-		return slot.getItem().sameItemStackIgnoreDurability(Registry.THIEF_GLOVE.get().getDefaultInstance());
+		return ItemStack.isSameItem(Registry.THIEF_GLOVE.get().getDefaultInstance(), slot.getItem());
 	}
 
 	private boolean isMissingItem(Slot slot) {
-		return slot.getItem().sameItemStackIgnoreDurability(Registry.MISSING.get().getDefaultInstance());
+		return ItemStack.isSameItem(Registry.THIEF_GLOVE.get().getDefaultInstance(), slot.getItem());
 	}
 
 	private boolean hasPocketChainEnchant(Slot slot) {
