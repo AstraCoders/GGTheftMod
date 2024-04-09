@@ -1,5 +1,6 @@
 package rok.theft.items;
 
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -18,40 +19,33 @@ import java.util.List;
  * @author Rok, Pedro Lucas N M Machado created on 24/08/2022
  */
 public class MissingItem extends Item {
-    public MissingItem() {
-        super(new Properties().stacksTo(1));
-    }
+	public MissingItem() {
+		super(new Properties().stacksTo(1));
+	}
 
 
-    @Override
-    public boolean onDroppedByPlayer(ItemStack item, Player player) {
-        item.setCount(0);
-        return false;
-    }
+	@Override
+	public boolean onDroppedByPlayer(ItemStack item, Player player) {
+		item.setCount(0);
+		return false;
+	}
 
-    @Override
-    public Component getName(ItemStack pStack) {
-        return super.getName(pStack);
-    }
+	@Override
+	public Component getName(ItemStack pStack) {
+		return super.getName(pStack);
+	}
 
-    @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
-        String lore = Language.getInstance().getOrDefault("item.theft.missing.lore");
+	@Override
+	public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
+		CompoundTag stolenTime = pStack.getOrCreateTag();
 
-        CompoundTag stolenTime = pStack.getOrCreateTag();
+		if (!stolenTime.contains(Constants.STOLEN_TIME_NBT)) {
+			return;
+		}
 
-        if (!stolenTime.contains(Constants.STOLEN_TIME_NBT)) {
-            return;
-        }
-
-        long time = System.currentTimeMillis() - stolenTime.getLong(Constants.STOLEN_TIME_NBT);
-        String formattedTime = new TimeFrame(time).getFormatedDiscursive();
-
-        lore = lore.replace("${time}", formattedTime);
-
-        String[] split = lore.split("\n");
-        for (String s : split) {
-            pTooltip.add(Component.literal(s));
-        }
-    }
+		long time = System.currentTimeMillis() - stolenTime.getLong(Constants.STOLEN_TIME_NBT);
+		String formattedTime = new TimeFrame(time).getFormatedDiscursive();
+		pTooltip.add(Component.translatable("item.theft.missing.lore.1", formattedTime));
+		pTooltip.add(Component.translatable("item.theft.missing.lore.2"));
+	}
 }

@@ -66,7 +66,9 @@ public class ThiefGloveItem extends Item {
 
 	@Override
 	public void appendHoverText(@NotNull ItemStack pStack, @Nullable Level pLevel, @NotNull List<Component> pTooltip, TooltipFlag pFlag) {
-		pTooltip.add(Component.translatable("item.theft.glove.lore"));
+		pTooltip.add(Component.translatable("item.theft.glove.lore.1"));
+		pTooltip.add(Component.translatable("item.theft.glove.lore.2"));
+		pTooltip.add(Component.translatable("item.theft.glove.lore.3"));
 		super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
 	}
 }

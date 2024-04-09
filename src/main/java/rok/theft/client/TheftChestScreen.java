@@ -50,8 +50,7 @@ public class TheftChestScreen extends AbstractContainerScreen<CustomChestContain
         int j = (this.height - this.imageHeight) / 2;
 
 
-        pMatrixStack.drawString(this.font, Component.literal("By Rok and Carmello"), i + 10, j + 58, 255255255); // 11141120 - i-8, j + 58
-
+//        pMatrixStack.drawString(this.font, Component.literal("By Rok and Carmello"), i + 10, j + 58, 255255255); // 11141120 - i-8, j + 58
 
         // Item Limit
         if (Config.COMMON.LIMIT_STEAL_ITEM.get())
