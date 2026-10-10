@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "rok.theft.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MixinContainer"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "verbose": true
+}

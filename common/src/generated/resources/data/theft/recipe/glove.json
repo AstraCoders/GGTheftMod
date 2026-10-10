@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": {
+      "tag": "c:leathers"
+    }
+  },
+  "pattern": [
+    "LLL",
+    " LL",
+    "LLL"
+  ],
+  "result": {
+    "id": "theft:glove",
+    "count": 1
+  },
+  "show_notification": true
+}

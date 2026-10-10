@@ -1,0 +1,203 @@
+package rok.theft.container;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import rok.theft.enchantments.PocketChainEnchant;
+import org.jetbrains.annotations.NotNull;
+import rok.theft.Config;
+import rok.theft.Constants;
+import rok.theft.Events;
+import rok.theft.init.Registry;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+/*
+ * @author Rok, Pedro Lucas N M Machado created on 12/08/2022
+ */
+public class CustomChestContainer extends AbstractContainerMenu {
+	private final Container container;
+	private final Set<Integer> initialSlots = new HashSet<>();
+	private final int containerRows;
+	public int canStoleQnt;
+
+	private final ItemStack glove;
+
+	public CustomChestContainer(int pContainerId, Inventory pPlayerInventory) {
+		this(pContainerId, pPlayerInventory, new SimpleContainer(5 * 9), null);
+	}
+
+	public CustomChestContainer(int pContainerId, Inventory pPlayerInventory, Container pContainer, ItemStack glove) {
+		this(Registry.CUSTOM_CHEST.get(), pContainerId, pPlayerInventory, pContainer, 5, glove);
+	}
+
+	public CustomChestContainer(MenuType<?> pType, int pContainerId, Inventory pPlayerInventory, Container pContainer, int pRows, ItemStack glove) {
+		super(pType, pContainerId);
+		checkContainerSize(pContainer, pRows * 9);
+		this.container = pContainer;
+		this.containerRows = pRows;
+		this.glove = glove;
+
+		// TODO: verificar CD de dia do mine
+		canStoleQnt = Config.COMMON.LIMIT_ITEM_NUMBER.get();
+
+		pContainer.startOpen(pPlayerInventory.player);
+		int i = (this.containerRows - 4) * 18;
+
+		if (Config.COMMON.SHOW_MISSING.get()) {
+			for (int j = 0; j < this.container.getContainerSize(); ++j) {
+				if (!container.getItem(j).isEmpty()) {
+					initialSlots.add(j);
+				}
+			}
+		}
+
+		for (int j = 0; j < this.containerRows; ++j) {
+			for (int k = 0; k < 9; ++k) {
+				this.addSlot(new CustomSlot(pContainer, k + j * 9, 8 + k * 18, 18 + j * 18));
+			}
+		}
+
+		for (int l = 0; l < 3; ++l) {
+			for (int j1 = 0; j1 < 9; ++j1) {
+				this.addSlot(new CustomSlot(pPlayerInventory, j1 + l * 9 + 9, 8 + j1 * 18, 103 + l * 18 + i));
+			}
+		}
+
+		for (int i1 = 0; i1 < 9; ++i1) {
+			this.addSlot(new CustomSlot(pPlayerInventory, i1, 8 + i1 * 18, 161 + i));
+		}
+		for (int x = 4; x < 8; x++) {
+			((CustomSlot) getSlot(x)).setActive(false);
+		}
+	}
+
+
+	/**
+	 * Determines whether supplied player can use this container
+	 */
+	@Override
+	public boolean stillValid(Player pPlayer) {
+		return this.container.stillValid(pPlayer);
+	}
+
+	/**
+	 * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
+	 * inventory and the other inventory(s).
+	 */
+	@Override
+	public @NotNull ItemStack quickMoveStack(Player pPlayer, int pIndex) {
+		ItemStack itemstack = ItemStack.EMPTY;
+		Slot slot = this.slots.get(pIndex);
+		if (slot != null && slot.hasItem()) {
+			ItemStack itemstack1 = slot.getItem();
+			itemstack = itemstack1.copy();
+			if (pIndex < this.containerRows * 9) {
+				if (!this.moveItemStackTo(itemstack1, this.containerRows * 9, this.slots.size(), true)) {
+					return ItemStack.EMPTY;
+				}
+			} else if (!this.moveItemStackTo(itemstack1, 9, this.containerRows * 9, false)) {
+				return ItemStack.EMPTY;
+			}
+
+
+			if (itemstack1.isEmpty()) {
+				slot.set(ItemStack.EMPTY);
+			} else {
+				slot.setChanged();
+			}
+		}
+		return itemstack;
+	}
+
+
+	@Override
+	public void clicked(int pSlotId, int pDragType, @NotNull ClickType pClickType, Player pPlayer) {
+		if (pSlotId < 0) return;
+		CustomSlot slot = (CustomSlot) getSlot(pSlotId);
+		if (isMissingItem(slot)) {
+			pPlayer.playSound(SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1F, 2F);
+			slot.remove(slot.getItem().getCount());
+			return;
+		} else if (isGlooveItem(slot)) {
+			return;
+		} else if (hasPocketChainEnchant(slot)) {
+			return;
+		}
+
+		if (pClickType.equals(ClickType.PICKUP_ALL)) return;
+
+		if (Config.COMMON.LIMIT_STEAL_ITEM.get()) {
+			if (slot.hasItem() && !slot.isPlayerInventory()) {
+				if (canStoleQnt <= 0) {
+					if (pPlayer instanceof ServerPlayer serverPlayer) serverPlayer.closeContainer();
+					return;
+				}
+				canStoleQnt--;
+			}
+		}
+
+		super.clicked(pSlotId, pDragType, pClickType, pPlayer);
+	}
+
+	/**
+	 * Called when the container is closed.
+	 */
+	@Override
+	public void removed(Player pPlayer) {
+
+		// time in cooldown
+		if (Config.COMMON.COOLDOWN_TO_STEAL.get() != 0 && glove != null) {
+			pPlayer.getCooldowns().addCooldown(glove.getItem(), Config.COMMON.COOLDOWN_TO_STEAL.get() * 20);
+		}
+
+		// creating missing item
+		if (Config.COMMON.SHOW_MISSING.get()) {
+			ItemStack missing = Registry.MISSING.get().getDefaultInstance();
+			CompoundTag nbt = new CompoundTag();
+			nbt.putLong(Constants.STOLEN_TIME_NBT, System.currentTimeMillis());
+			missing.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
+
+			for (Integer initialSlot : initialSlots) {
+				if (!getSlot(initialSlot).hasItem()) {
+					getSlot(initialSlot).set(missing);
+				}
+			}
+		}
+		super.removed(pPlayer);
+		this.container.stopOpen(pPlayer);
+		Events.closeInventory(pPlayer);
+	}
+
+	public int getRowCount() {
+		return this.containerRows;
+	}
+
+	private boolean isGlooveItem(Slot slot) {
+		return ItemStack.isSameItem(Registry.THIEF_GLOVE.get().getDefaultInstance(), slot.getItem());
+	}
+
+	private boolean isMissingItem(Slot slot) {
+		return ItemStack.isSameItem(Registry.MISSING.get().getDefaultInstance(), slot.getItem());
+	}
+
+	private boolean hasPocketChainEnchant(Slot slot) {
+		if (Config.COMMON.POCKET_CHAIN_ENCHANT.get()) return false;
+		ItemEnchantments enchantments = slot.getItem().getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+		return enchantments.keySet().stream().anyMatch(holder -> holder.is(PocketChainEnchant.KEY));
+	}
+}

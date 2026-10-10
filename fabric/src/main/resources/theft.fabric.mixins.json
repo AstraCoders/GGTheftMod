@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "rok.theft.platform.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": ["MixinPlayer"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

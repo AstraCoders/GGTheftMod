@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "theft",
+  "version": "${version}",
+  "name": "Theft",
+  "description": "Steal items from other players with the Thief's Glove.",
+  "authors": ["Rok", "Lucasmellof"],
+  "license": "All-Rights-Reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["rok.theft.platform.fabric.TheftFabric"],
+    "client": ["rok.theft.platform.fabric.TheftFabricClient"]
+  },
+  "mixins": [
+    "theft.mixins.json",
+    "theft.fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=${java_version}",
+    "fabric-api": ">=${fabric_api_version}",
+    "forgeconfigapiport": ">=21.1.6"
+  }
+}
