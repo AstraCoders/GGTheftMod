@@ -7,16 +7,21 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.datafixers.util.Pair;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import net.neoforged.bus.api.IEventBus;
 import rok.theft.Theft;
 import rok.theft.container.CustomChestContainer;
 import rok.theft.init.CreativeTab;
 import rok.theft.init.Registry;
 import rok.theft.items.MissingItem;
 import rok.theft.items.ThiefGloveItem;
+
+import java.util.ArrayList;
 
 /*
  * @author Lucasmellof, Lucas de Mello Freitas created on 05/10/2026
@@ -30,7 +35,14 @@ public final class NeoForgeRegistry {
     private NeoForgeRegistry() {}
 
     public static void register(IEventBus bus) {
-        Registry.CUSTOM_CHEST = MENUS.register("theft_container", () -> new MenuType<>(CustomChestContainer::new, FeatureFlagSet.of()));
+        Registry.CUSTOM_CHEST = MENUS.register("theft_container", () -> IMenuTypeExtension.create((id, inventory, data) -> {
+            int curiosSlots = data == null ? 0 : data.readVarInt();
+            ArrayList<Pair<String, ResourceLocation>> curiosTypes = new ArrayList<>(curiosSlots);
+            for (int i = 0; i < curiosSlots; i++) {
+                curiosTypes.add(Pair.of(data.readUtf(), data.readResourceLocation()));
+            }
+            return new CustomChestContainer(id, inventory, curiosSlots, curiosTypes);
+        }));
         Registry.THIEF_GLOVE = CreativeTab.addToTab(ITEMS.register("glove", ThiefGloveItem::new));
         Registry.MISSING = ITEMS.register("missing", MissingItem::new);
         Registry.GLOVE_TAB = TABS.register("theft_tab", () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)

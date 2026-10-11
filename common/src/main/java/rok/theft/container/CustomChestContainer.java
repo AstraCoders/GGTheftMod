@@ -12,6 +12,8 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -23,7 +25,7 @@ import rok.theft.Events;
 import rok.theft.init.Registry;
 
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 /*
@@ -32,24 +34,46 @@ import java.util.Set;
 public class CustomChestContainer extends AbstractContainerMenu {
 	private final Container container;
 	private final Set<Integer> initialSlots = new HashSet<>();
+	private final Set<Integer> initialCuriosSlots = new HashSet<>();
 	private final int containerRows;
+	private final int curiosSlots;
+	private final int curiosColumns;
+	private final int curiosPanelWidth;
+	private final int curiosSlotStartMenuIndex;
+	private final CuriosPageContainer curiosPageContainer;
 	public int canStoleQnt;
 
 	private final ItemStack glove;
 
 	public CustomChestContainer(int pContainerId, Inventory pPlayerInventory) {
-		this(pContainerId, pPlayerInventory, new SimpleContainer(5 * 9), null);
+		this(Registry.CUSTOM_CHEST.get(), pContainerId, pPlayerInventory, new SimpleContainer(45), null);
+	}
+
+	public CustomChestContainer(int pContainerId, Inventory pPlayerInventory, int curiosSlots) {
+		this(pContainerId, pPlayerInventory, curiosSlots, List.of());
+	}
+
+	public CustomChestContainer(int pContainerId, Inventory pPlayerInventory, int curiosSlots, List<Pair<String, ResourceLocation>> curiosTypes) {
+		this(Registry.CUSTOM_CHEST.get(), pContainerId, pPlayerInventory, new SimpleContainer(45 + curiosSlots), null, curiosTypes);
 	}
 
 	public CustomChestContainer(int pContainerId, Inventory pPlayerInventory, Container pContainer, ItemStack glove) {
-		this(Registry.CUSTOM_CHEST.get(), pContainerId, pPlayerInventory, pContainer, 5, glove);
+		this(Registry.CUSTOM_CHEST.get(), pContainerId, pPlayerInventory, pContainer, glove, List.of());
 	}
 
-	public CustomChestContainer(MenuType<?> pType, int pContainerId, Inventory pPlayerInventory, Container pContainer, int pRows, ItemStack glove) {
+	public CustomChestContainer(MenuType<?> pType, int pContainerId, Inventory pPlayerInventory, Container pContainer, ItemStack glove) {
+		this(pType, pContainerId, pPlayerInventory, pContainer, glove, List.of());
+	}
+
+	private CustomChestContainer(MenuType<?> pType, int pContainerId, Inventory pPlayerInventory, Container pContainer, ItemStack glove, List<Pair<String, ResourceLocation>> curiosTypes) {
 		super(pType, pContainerId);
-		checkContainerSize(pContainer, pRows * 9);
+		checkContainerSize(pContainer, 45);
 		this.container = pContainer;
-		this.containerRows = pRows;
+		this.containerRows = 5;
+		this.curiosSlots = Math.max(0, pContainer.getContainerSize() - 45);
+		this.curiosPageContainer = this.curiosSlots == 0 ? null : new CuriosPageContainer(pContainer, this.curiosSlots);
+		this.curiosColumns = this.curiosPageContainer == null ? 0 : this.curiosPageContainer.getColumns();
+		this.curiosPanelWidth = this.curiosColumns == 0 ? 0 : 15 + this.curiosColumns * 18;
 		this.glove = glove;
 
 		// TODO: verificar CD de dia do mine
@@ -59,30 +83,42 @@ public class CustomChestContainer extends AbstractContainerMenu {
 		int i = (this.containerRows - 4) * 18;
 
 		if (Config.COMMON.SHOW_MISSING.get()) {
-			for (int j = 0; j < this.container.getContainerSize(); ++j) {
+			for (int j = 0; j < 45; ++j) {
 				if (!container.getItem(j).isEmpty()) {
 					initialSlots.add(j);
 				}
+			}
+			for (int j = 0; j < this.curiosSlots; ++j) {
+				if (!container.getItem(45 + j).isEmpty()) initialCuriosSlots.add(j);
 			}
 		}
 
 		for (int j = 0; j < this.containerRows; ++j) {
 			for (int k = 0; k < 9; ++k) {
-				this.addSlot(new CustomSlot(pContainer, k + j * 9, 8 + k * 18, 18 + j * 18));
+				this.addSlot(new CustomSlot(pContainer, k + j * 9, this.curiosPanelWidth + 8 + k * 18, 18 + j * 18));
 			}
 		}
 
 		for (int l = 0; l < 3; ++l) {
 			for (int j1 = 0; j1 < 9; ++j1) {
-				this.addSlot(new CustomSlot(pPlayerInventory, j1 + l * 9 + 9, 8 + j1 * 18, 103 + l * 18 + i));
+				this.addSlot(new CustomSlot(pPlayerInventory, j1 + l * 9 + 9, this.curiosPanelWidth + 8 + j1 * 18, 103 + l * 18 + i));
 			}
 		}
 
 		for (int i1 = 0; i1 < 9; ++i1) {
-			this.addSlot(new CustomSlot(pPlayerInventory, i1, 8 + i1 * 18, 161 + i));
+			this.addSlot(new CustomSlot(pPlayerInventory, i1, this.curiosPanelWidth + 8 + i1 * 18, 161 + i));
 		}
 		for (int x = 4; x < 8; x++) {
 			((CustomSlot) getSlot(x)).setActive(false);
+		}
+		this.curiosSlotStartMenuIndex = this.slots.size();
+		for (int x = 0; x < (this.curiosPageContainer == null ? 0 : this.curiosPageContainer.getContainerSize()); x++) {
+			int column = x % this.curiosColumns;
+			int row = x / this.curiosColumns;
+			CustomSlot slot = new CustomSlot(this.curiosPageContainer, x, 8 + column * 18, 18 + row * 18, true);
+			if (x < curiosTypes.size()) slot.setCuriosType(curiosTypes.get(x).getFirst(), curiosTypes.get(x).getSecond());
+			slot.setActive(x < this.curiosPageContainer.getVisibleSlots());
+			this.addSlot(slot);
 		}
 	}
 
@@ -103,11 +139,12 @@ public class CustomChestContainer extends AbstractContainerMenu {
 	public @NotNull ItemStack quickMoveStack(Player pPlayer, int pIndex) {
 		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = this.slots.get(pIndex);
+		if (slot instanceof CustomSlot customSlot && customSlot.isCuriosSlot()) return ItemStack.EMPTY;
 		if (slot != null && slot.hasItem()) {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
 			if (pIndex < this.containerRows * 9) {
-				if (!this.moveItemStackTo(itemstack1, this.containerRows * 9, this.slots.size(), true)) {
+				if (!this.moveItemStackTo(itemstack1, this.containerRows * 9, this.containerRows * 9 + 36, true)) {
 					return ItemStack.EMPTY;
 				}
 			} else if (!this.moveItemStackTo(itemstack1, 9, this.containerRows * 9, false)) {
@@ -177,6 +214,9 @@ public class CustomChestContainer extends AbstractContainerMenu {
 					getSlot(initialSlot).set(missing);
 				}
 			}
+			for (Integer initialSlot : initialCuriosSlots) {
+				if (container.getItem(45 + initialSlot).isEmpty()) container.setItem(45 + initialSlot, missing);
+			}
 		}
 		super.removed(pPlayer);
 		this.container.stopOpen(pPlayer);
@@ -185,6 +225,46 @@ public class CustomChestContainer extends AbstractContainerMenu {
 
 	public int getRowCount() {
 		return this.containerRows;
+	}
+
+	public int getCuriosPanelWidth() {
+		return this.curiosPanelWidth;
+	}
+
+	public int getCuriosColumns() {
+		return this.curiosColumns;
+	}
+
+	public int getCuriosSlots() {
+		return this.curiosSlots;
+	}
+
+	public int getCuriosRowsInColumn(int column) {
+		return this.curiosPageContainer == null ? 0 : this.curiosPageContainer.getRowsInColumn(column);
+	}
+
+	public int getCuriosPageCount() {
+		return this.curiosPageContainer == null ? 0 : this.curiosPageContainer.getPageCount();
+	}
+
+	public int getCuriosPage() {
+		return this.curiosPageContainer == null ? 0 : this.curiosPageContainer.getPage();
+	}
+
+	@Override
+	public boolean clickMenuButton(Player player, int buttonId) {
+		if (this.curiosPageContainer == null || this.getCuriosPageCount() < 2) return false;
+		int nextPage = switch (buttonId) {
+			case 0 -> this.getCuriosPage() - 1;
+			case 1 -> this.getCuriosPage() + 1;
+			default -> this.getCuriosPage();
+		};
+		if (!this.curiosPageContainer.setPage(nextPage)) return false;
+		for (int i = 0; i < this.curiosPageContainer.getContainerSize(); i++) {
+			((CustomSlot) this.getSlot(this.curiosSlotStartMenuIndex + i)).setActive(i < this.curiosPageContainer.getVisibleSlots());
+		}
+		this.broadcastFullState();
+		return true;
 	}
 
 	private boolean isGlooveItem(Slot slot) {

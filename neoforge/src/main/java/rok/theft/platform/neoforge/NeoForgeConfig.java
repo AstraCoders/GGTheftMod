@@ -26,6 +26,7 @@ final class NeoForgeConfig {
         Config.COMMON.POCKET_CHAIN_ENCHANT = VALUES.POCKET_CHAIN_ENCHANT::get;
         Config.COMMON.LIMIT_STEAL_ITEM = VALUES.LIMIT_STEAL_ITEM::get;
         Config.COMMON.LIMIT_ITEM_NUMBER = VALUES.LIMIT_ITEM_NUMBER::get;
+        Config.COMMON.STEAL_CURIOS_ITEMS = VALUES.STEAL_CURIOS_ITEMS::get;
         Config.COMMON.COOLDOWN_TO_STEAL = VALUES.COOLDOWN_TO_STEAL::get;
         Config.COMMON.COOLDOWN_RESET_SLEEP = VALUES.COOLDOWN_RESET_SLEEP::get;
         Config.COMMON.GENERATE_LOOT = VALUES.GENERATE_LOOT::get;
@@ -46,6 +47,7 @@ final class NeoForgeConfig {
         final ModConfigSpec.BooleanValue POCKET_CHAIN_ENCHANT;
         final ModConfigSpec.BooleanValue LIMIT_STEAL_ITEM;
         final ModConfigSpec.IntValue LIMIT_ITEM_NUMBER;
+        final ModConfigSpec.BooleanValue STEAL_CURIOS_ITEMS;
         final ModConfigSpec.IntValue COOLDOWN_TO_STEAL;
         final ModConfigSpec.BooleanValue COOLDOWN_RESET_SLEEP;
         final ModConfigSpec.BooleanValue GENERATE_LOOT;
@@ -72,6 +74,7 @@ final class NeoForgeConfig {
             STEAL_TIMER = builder.comment("Should player have time to steal another player?").define("steal_timer_enabled", true);
             STEAL_TIME = builder.comment("Time to steal player").defineInRange("steal_time", 16, 0, 999);
             STEAL_TITLE = builder.comment("Stealing inventory should have a title? (Example: \"Stealing Steve\")").define("steal_title_enabled", true);
+            STEAL_CURIOS_ITEMS = builder.comment("Allow stealing items from Curios slots (requires Curios)").define("steal_curios_items", true);
             builder.pop();
 
             builder.push("loot");

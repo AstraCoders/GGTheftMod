@@ -21,6 +21,7 @@ public final class Config {
         public Supplier<Boolean> POCKET_CHAIN_ENCHANT = () -> false;
         public Supplier<Boolean> LIMIT_STEAL_ITEM = () -> true;
         public Supplier<Integer> LIMIT_ITEM_NUMBER = () -> 5;
+        public Supplier<Boolean> STEAL_CURIOS_ITEMS = () -> true;
         public Supplier<Integer> COOLDOWN_TO_STEAL = () -> 10;
         public Supplier<Boolean> COOLDOWN_RESET_SLEEP = () -> false;
         public Supplier<Boolean> GENERATE_LOOT = () -> true;

@@ -27,7 +27,9 @@ public class TheftAction {
 			packetTime = Config.COMMON.STEAL_TIME.get();
 		}
 		Theft.sendTheftTime(player, packetTime);
-		player.openMenu(new MenuProvider() {
+		var curiosInventory = Theft.getCuriosInventory(target);
+		TargetPlayerInventory targetInventory = new TargetPlayerInventory(target, curiosInventory);
+		Theft.openTheftMenu(player, new MenuProvider() {
 			@Override
 			public Component getDisplayName() {
 				if (Config.COMMON.STEAL_TITLE.get()) {
@@ -38,9 +40,9 @@ public class TheftAction {
 
 			@Override
 			public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-				return new CustomChestContainer(id, inventory, new TargetPlayerInventory(target), itemStack);
+				return new CustomChestContainer(id, inventory, targetInventory, itemStack);
 			}
-		});
+		}, curiosInventory);
 
 	}
 }

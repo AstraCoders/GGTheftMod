@@ -1,11 +1,15 @@
 package rok.theft.platform.neoforge;
 
 import net.neoforged.bus.api.IEventBus;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Pose;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Pose;
+import rok.theft.Config;
 import rok.theft.Theft;
 import rok.theft.TheftPlatform;
 import rok.theft.datagen.DataGenerator;
@@ -24,6 +28,28 @@ public final class TheftNeoForge {
             @Override
             public void sendTheftTime(ServerPlayer player, int time) {
                 NeoForgeNetwork.send(player, time);
+            }
+
+            @Override
+            public Container getCuriosInventory(ServerPlayer player) {
+                return Config.COMMON.STEAL_CURIOS_ITEMS.get() && ModList.get().isLoaded("curios")
+                        ? CuriosTheftInventory.create(player)
+                        : null;
+            }
+
+            @Override
+            public void openTheftMenu(ServerPlayer player, MenuProvider provider, Container curiosInventory) {
+                if (ModList.get().isLoaded("curios") && curiosInventory instanceof CuriosTheftInventory curios) {
+                    player.openMenu(provider, buffer -> {
+                        buffer.writeVarInt(curios.getContainerSize());
+                        for (CuriosTheftInventory.CurioSlotType type : curios.getSlotTypes()) {
+                            buffer.writeUtf(type.identifier());
+                            buffer.writeResourceLocation(type.icon());
+                        }
+                    });
+                } else {
+                    player.openMenu(provider, buffer -> buffer.writeVarInt(0));
+                }
             }
 
             @Override

@@ -6,6 +6,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import rok.theft.Config;
 
 /*
@@ -13,13 +15,22 @@ import rok.theft.Config;
  */
 public class CustomSlot extends Slot {
     boolean active = true;
+    private final boolean curiosSlot;
+    private String curiosIdentifier;
+    private ResourceLocation curiosIcon;
 
     public CustomSlot(Container pContainer, int pIndex, int pX, int pY) {
+        this(pContainer, pIndex, pX, pY, false);
+    }
+
+    public CustomSlot(Container pContainer, int pIndex, int pX, int pY, boolean curiosSlot) {
         super(pContainer, pIndex, pX, pY);
+        this.curiosSlot = curiosSlot;
     }
 
     @Override
     public boolean mayPlace(ItemStack pStack) {
+        if (curiosSlot) return false;
         if (isPlayerInventory()) return true;
         if (getContainerSlot() > 4) return true;
         if (!(pStack.getItem() instanceof ArmorItem)) return false;
@@ -49,7 +60,26 @@ public class CustomSlot extends Slot {
     }
 
     public boolean isPlayerInventory() {
-        return container.getContainerSize() <= 41;
+        return !curiosSlot && container.getContainerSize() <= 41;
+    }
+
+    public boolean isCuriosSlot() {
+        return curiosSlot;
+    }
+
+    public void setCuriosType(String identifier, ResourceLocation icon) {
+        this.curiosIdentifier = identifier;
+        this.curiosIcon = icon;
+    }
+
+    public ResourceLocation getCuriosIcon() {
+        return curiosIcon;
+    }
+
+    public Component getCuriosTooltip() {
+        if (curiosIdentifier == null || curiosIdentifier.isEmpty()) return null;
+        String defaultName = Character.toUpperCase(curiosIdentifier.charAt(0)) + curiosIdentifier.substring(1).toLowerCase();
+        return Component.translatableWithFallback("curios.identifier." + curiosIdentifier, defaultName);
     }
 
 }

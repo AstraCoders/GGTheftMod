@@ -7,19 +7,21 @@ import net.minecraft.world.item.ItemStack;
 
 public class TargetPlayerInventory implements Container {
     public final ServerPlayer player;
+    private final Container curios;
 
-    public TargetPlayerInventory(ServerPlayer p) {
+    public TargetPlayerInventory(ServerPlayer p, Container curios) {
         player = p;
+        this.curios = curios;
     }
 
     @Override
     public int getContainerSize() {
-        return 45;
+        return 45 + (curios == null ? 0 : curios.getContainerSize());
     }
 
     @Override
     public boolean isEmpty() {
-        return player.getInventory().isEmpty();
+        return player.getInventory().isEmpty() && (curios == null || curios.isEmpty());
     }
 
     public int getSlot(int index) {
@@ -45,6 +47,10 @@ public class TargetPlayerInventory implements Container {
         if (isInvalidSlot(pIndex)) {
             return ItemStack.EMPTY;
         }
+        if (pIndex >= 45) {
+            int curiosIndex = pIndex - 45;
+            return curios != null && curiosIndex < curios.getContainerSize() ? curios.getItem(curiosIndex) : ItemStack.EMPTY;
+        }
         int slot = getSlot(pIndex);
         return slot == -1 ? ItemStack.EMPTY : player.getInventory().getItem(slot);
     }
@@ -53,6 +59,10 @@ public class TargetPlayerInventory implements Container {
     public ItemStack removeItem(int pIndex, int count) {
         if (isInvalidSlot(pIndex)) {
             return ItemStack.EMPTY;
+        }
+        if (pIndex >= 45) {
+            int curiosIndex = pIndex - 45;
+            return curios != null && curiosIndex < curios.getContainerSize() ? curios.removeItem(curiosIndex, count) : ItemStack.EMPTY;
         }
 
         int slot = getSlot(pIndex);
@@ -64,6 +74,10 @@ public class TargetPlayerInventory implements Container {
         if (isInvalidSlot(pIndex)) {
             return ItemStack.EMPTY;
         }
+        if (pIndex >= 45) {
+            int curiosIndex = pIndex - 45;
+            return curios != null && curiosIndex < curios.getContainerSize() ? curios.removeItemNoUpdate(curiosIndex) : ItemStack.EMPTY;
+        }
 
         int slot = getSlot(pIndex);
         return slot == -1 ? ItemStack.EMPTY : player.getInventory().removeItemNoUpdate(slot);
@@ -72,6 +86,14 @@ public class TargetPlayerInventory implements Container {
     @Override
     public void setItem(int index, ItemStack pStack) {
         if (isInvalidSlot(index)) {
+            return;
+        }
+        if (index >= 45) {
+            int curiosIndex = index - 45;
+            if (curios != null && curiosIndex < curios.getContainerSize()) {
+                curios.setItem(curiosIndex, pStack);
+                setChanged();
+            }
             return;
         }
 
@@ -86,6 +108,7 @@ public class TargetPlayerInventory implements Container {
     @Override
     public void setChanged() {
         player.getInventory().setChanged();
+        if (curios != null) curios.setChanged();
         player.containerMenu.broadcastChanges();
     }
 
@@ -99,6 +122,10 @@ public class TargetPlayerInventory implements Container {
         if (isInvalidSlot(index)) {
             return false;
         }
+        if (index >= 45) {
+            int curiosIndex = index - 45;
+            return curios != null && curiosIndex < curios.getContainerSize() && curios.canPlaceItem(curiosIndex, stack);
+        }
 
         int slot = getSlot(index);
         return slot != -1 && player.getInventory().canPlaceItem(slot, stack);
@@ -107,5 +134,6 @@ public class TargetPlayerInventory implements Container {
     @Override
     public void clearContent() {
         player.getInventory().clearContent();
+        if (curios != null) curios.clearContent();
     }
 }

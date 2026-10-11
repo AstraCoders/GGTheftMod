@@ -1,4 +1,5 @@
 plugins {
+    id("idea")
     id("multiloader-loader")
     id("net.neoforged.moddev")
     id("net.darkhax.curseforgegradle")
@@ -15,6 +16,16 @@ val modrinth_project_id: String by project
 base.archivesName.set("${mod_id}-neoforge-${minecraft_version}")
 
 sourceSets.main.get().resources.srcDir("src/generated/resources")
+
+repositories {
+    maven("https://maven.theillusivec4.top/")
+    maven {
+        url = uri("https://cursemaven.com")
+        content {
+            includeGroup("curse.maven")
+        }
+    }
+}
 
 neoForge {
     version = neoforge_version
@@ -60,6 +71,12 @@ tasks.processResources {
 
 dependencies {
     compileOnly("org.spongepowered:mixin:0.8.5")
+    compileOnly("top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1:api")
+    runtimeOnly("top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1")
+
+    runtimeOnly("curse.maven:shatterbyte-lib-916747:8040848")
+    runtimeOnly("curse.maven:relics-mod-445274:8158315")
+    runtimeOnly("curse.maven:architectury-api-419699:8492726")
 }
 
 tasks.register<net.darkhax.curseforgegradle.TaskPublishCurseForge>("publishCurseForge") {
